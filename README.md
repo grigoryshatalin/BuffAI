@@ -18,7 +18,12 @@ The Buff Blueprint will include various features to enhance academic decision-ma
 To support personalized academic planning, the system will provide each user with a dashboard to track their progress and store user data securely in a dedicated database. The AI will assist in long-term academic scheduling, ensuring students remain on track for graduation while adapting to their evolving interests and needs. By centralizing academic planning into one intelligent system, Buff Blueprint aims to reduce stress and improve decision-making for CU Boulder students.
 
 ## Target Audience
-CU Boulder Students
+The ideal users of Buff Blueprint are CU Boulder students who need a streamlined and intelligent way to plan their academic journey. These students may be undergraduates or graduate students looking for assistance in selecting courses, optimizing their schedules, and efficiently planning their path to graduation. They might struggle with course selection, balancing major and minor requirements, and navigating available resources for making informed academic decisions.
 
 ## Vision Statement
-Buff Blueprint aims to revolutionize academic planning by providing CU Boulder students with an AI-powered tool that simplifies course selection, optimizes scheduling, and enhances decision-making. By integrating personalized recommendations, route optimization, and user-friendly dashboards, our goal is to empower students with a seamless and efficient way to navigate their academic journeys, ensuring success and satisfaction throughout their college experience.
+For CU Boulder students, who struggle with academic planning, course selection, and optimizing their schedules, the Buff Blueprint is an AI-powered academic planning tool that automates course selection, builds personalized academic plans, and integrates navigation and professor ratings to enhance decision-making. Unlike manual degree planning and generic advising tools, our product leverages AI to provide tailored recommendations, streamline scheduling, and improve the overall academic experience through an intuitive and accessible platform.
+
+## Communication plan
+Discord and IMS when needed.
+
+## Meeting plan
