@@ -27,3 +27,5 @@ For CU Boulder students, who struggle with academic planning, course selection, 
 Discord and IMS when needed.
 
 ## Meeting plan
+Scheduled Weekly Team Meetings: 4:00 PM Wednesdays
+Meeting with our TA: 4:30 PM - 4:45 PM Mondays 
