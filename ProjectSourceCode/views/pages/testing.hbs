@@ -1,0 +1,56 @@
+{{> head}}
+{{> nav}}
+
+<style>
+  .terminal-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: #1e1e1e;
+    color: white;
+    font-family: monospace;
+  }
+  .input-box {
+    border: none;
+    background: none;
+    color: white;
+    font-size: 18px;
+    width: 300px;
+    outline: none;
+  }
+  .blinking-cursor {
+    display: inline-block;
+    width: 10px;
+    height: 20px;
+    background-color: dimgray;
+    animation: blink 1s infinite;
+  }
+  @keyframes blink {
+    0% { opacity: 1; }
+    50% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+</style>
+
+<div class="terminal-container">
+  <span>Enter Command:</span>
+  <div>
+    <input id="terminal-input" class="input-box" type="text" autofocus>
+    <span class="blinking-cursor"></span>
+  </div>
+</div>
+
+<script>
+  document.getElementById("terminal-input").addEventListener("keypress", function(event) {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      console.log("Input submitted:", this.value);
+      this.value = ""; 
+    }
+  });
+</script>
+
+{{> message}}
+{{> footer}}
