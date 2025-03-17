@@ -29,4 +29,16 @@ Discord and IMS when needed.
 ## Meeting plan
 Scheduled Weekly Team Meetings: 4:00 PM Wednesdays
 
-Meeting with our TA: 4:30 PM - 4:45 PM Mondays 
+Meeting with our!
+ TA: 4:30 PM - 4:45 PM Mondays 
+
+
+## Wireframe Diagrams
+(https://github.com/user-attachments/assets/a422dc75-a425-44a7-afbc-543e7f1f1145)
+(https://github.com/user-attachments/assets/fe6efae8-4984-45f4-9fd3-27050ed6db84)
+(https://github.com/user-attachments/assets/8f21aae5-442b-4c51-be0c-e7ce16500b27)
+(https://github.com/user-attachments/assets/188ccc45-2506-4eda-afc1-6d61770a6ec3)
+
+
+
+
