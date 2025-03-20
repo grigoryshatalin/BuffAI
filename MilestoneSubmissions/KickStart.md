@@ -23,6 +23,10 @@ The ideal users of Buff Blueprint are CU Boulder students who need a streamlined
 ## Vision Statement
 For CU Boulder students, who struggle with academic planning, course selection, and optimizing their schedules, the Buff Blueprint is an AI-powered academic planning tool that automates course selection, builds personalized academic plans, and integrates navigation and professor ratings to enhance decision-making. Unlike manual degree planning and generic advising tools, our product leverages AI to provide tailored recommendations, streamline scheduling, and improve the overall academic experience through an intuitive and accessible platform.
 
+
+## Developmental Methodology
+We are using an agile developmental methodology where we will use user stories to define our requirements within our project.  We are using a Github project board in a Kanban Board style to ideate and establish our high level project goals. We will have weekly scrum meetings to focus our work and ensure all team members understand the project in the same way. 
+
 ## Communication plan
 Discord and IMS when needed.
 
