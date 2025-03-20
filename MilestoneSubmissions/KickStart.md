@@ -32,6 +32,8 @@ Scheduled Weekly Team Meetings: 4:00 PM Wednesdays
 Meeting with our!
 TA: 4:30 PM - 4:45 PM Mondays 
 
+## Case Diagrams
+Here is a link to the canva that has our case diagram: https://www.canva.com/design/DAGiNrbLfyw/hewiE8BSokiTSN-7Y0tU6w/edit?utm_content=DAGiNrbLfyw&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton
 
 ## Wireframe Diagrams
 Registration page: (https://github.com/user-attachments/assets/a422dc75-a425-44a7-afbc-543e7f1f1145)
