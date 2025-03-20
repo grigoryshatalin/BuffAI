@@ -6,7 +6,7 @@
 - Arianna Baer  
 - Grigory Shatalin  
 - James Simmons  
-- Marcus DLuca  
+- Marcus DeLuca  
 - Spencer Hoehl  
 
 ## Buff Blueprint
