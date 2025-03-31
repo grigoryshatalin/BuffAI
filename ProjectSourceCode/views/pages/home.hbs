@@ -1,0 +1,22 @@
+
+{{> head}}
+<body>
+    {{> nav}}
+    
+    <h1>{{title}}</h1>
+    
+    <div class="progress-container">
+        <span class="progress-text">{{progress}}%</span>
+    </div>
+    
+    <div class="section">Degree Plan</div>
+    {{#each degreePlan}}
+        <div class="section">{{this}}</div>
+    {{/each}}
+    
+    <div class="section">Credit Hours Taken: {{creditHours}}</div>
+    <div class="section">Weekly Schedule</div>
+    
+    {{> footer}}
+</body>
+</html>
