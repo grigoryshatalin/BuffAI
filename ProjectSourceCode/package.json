@@ -13,7 +13,8 @@
         "pg-promise": "^10.11.1"
     },
     "scripts": {
-        "prestart": "npm install",
-        "start": "node index.js"
+        "postinstall": "sudo curl -fsSL https://ollama.com/install.sh | sh && ollama pull gemma3",
+        "start": "npm run ollama-serve & node index.js",
+        "ollama-serve": "ollama serve"
     }
 }

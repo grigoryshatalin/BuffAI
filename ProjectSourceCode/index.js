@@ -7,7 +7,7 @@ const bodyParser = require('body-parser');
 const session = require('express-session');
 const bcrypt = require('bcryptjs');
 const axios = require('axios'); // Used to call Ollama API
-const ollama = require('ollama'); // CommonJS style import
+const { Ollama } = require("@langchain/ollama");
 
 // *****************************************************
 // <!-- Section 2 : Connect to DB -->
@@ -48,46 +48,32 @@ app.set('views', path.join(__dirname, 'views/pages')); // This points to the 'pa
 app.use(express.urlencoded({ extended: true })); // Parse form data
 app.use(express.json()); // Allow JSON body parsing
 
-
 // Route to render testing.hbs
 app.get('/', (req, res) => {
     res.render('testing', { response: null }); // Pass empty response initially
 });
 
 // Route to handle Ollama API request
-// Route to handle Ollama API request
 app.post('/generate', async (req, res) => {
   const { prompt } = req.body; // Extract user input
 
   try {
-    const url = 'http://localhost:11434/api/generate';
-    const data = {
-      model: 'gemma3',
-      prompt: prompt,
-      stream: false // Set to true for streaming responses
-    };
-
-    // Use axios instead of fetch
-    const response = await axios.post(url, data, {
-      headers: {
-        'Content-Type': 'application/json'
-      }
+    const ollama = new Ollama({
+      model: "gemma3", // Ensure model is installed and available
+      baseUrl: "http://localhost:11434", // Ollama's server URL
     });
 
-    // Check for successful response
-    if (response.status !== 200) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
+    // Make the request to Ollama
+    const response = await ollama.invoke(prompt);
 
-    console.log(response.data.response);
-    res.render('testing', { response: response.data.response }); // Send response back
+    // Log and return the response
+    res.render('testing', { response: response }); // Send response back
+
   } catch (error) {
     console.error("Error fetching Ollama response:", error);
     res.render('testing', { response: "Error generating response. Please try again." });
   }
 });
-
-
 
 // Start the server
 const PORT = process.env.PORT || 3000;
