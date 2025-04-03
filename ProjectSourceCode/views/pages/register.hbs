@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 400px;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        p {
+            text-align: center;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Register</h2>
+        <form action="/register" method="POST">
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="year">Year:</label>
+                <select id="year" name="year" required>
+                    <option value="Freshman">Freshman</option>
+                    <option value="Sophomore">Sophomore</option>
+                    <option value="Junior">Junior</option>
+                    <option value="Senior">Senior</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="major">Major(s):</label>
+                <select id="major" name="major" required>
+                    <!-- adding a list found online and used AI to quickly make them all options -->
+                    <option value="Actuarial Studies & Quantitative Finance Program, Certificate">Actuarial Studies & Quantitative Finance Program, Certificate</option>
+                    <option value="Animals and Society, Certificate">Animals and Society, Certificate</option>
+                    <option value="Anthropology">Anthropology</option>
+                    <option value="Applied Math">Applied Math</option>
+                    <option value="Arabic">Arabic</option>
+                    <option value="Arctic Studies Certificate">Arctic Studies Certificate</option>
+                    <option value="Art and Social Change, Certificate">Art and Social Change, Certificate</option>
+                    <option value="Art History">Art History</option>
+                    <option value="Art Practices">Art Practices</option>
+                    <option value="Art Practices (BFA)">Art Practices (BFA)</option>
+                    <option value="Asian Studies">Asian Studies</option>
+                    <option value="Astrophysical & Planetary Sciences">Astrophysical & Planetary Sciences</option>
+                    <option value="Atmospheric & Oceanic Sciences">Atmospheric & Oceanic Sciences</option>
+                    <option value="Biochemistry">Biochemistry</option>
+                    <option value="Business of Sports Certificate">Business of Sports Certificate</option>
+                    <option value="Care, Health and Resilience Certificate">Care, Health and Resilience Certificate</option>
+                    <option value="Central & East European Studies Certificate">Central & East European Studies Certificate</option>
+                    <option value="Certificate in Writing">Certificate in Writing</option>
+                    <option value="Chemistry">Chemistry</option>
+                    <option value="Chinese">Chinese</option>
+                    <option value="Cinema Studies and Moving Image Arts">Cinema Studies and Moving Image Arts</option>
+                    <option value="Cinema Studies and Moving Image Arts (BFA)">Cinema Studies and Moving Image Arts (BFA)</option>
+                    <option value="Classics">Classics</option>
+                    <option value="Cognitive Science Certificate">Cognitive Science Certificate</option>
+                    <option value="Computer Science">Computer Science</option>
+                    <option value="Creative Writing">Creative Writing</option>
+                    <option value="Critical Sports Studies, Certificate">Critical Sports Studies, Certificate</option>
+                    <option value="Dance">Dance</option>
+                    <option value="Dance (BFA)">Dance (BFA)</option>
+                    <option value="Ecology & Evolutionary Biology">Ecology & Evolutionary Biology</option>
+                    <option value="Economics">Economics</option>
+                    <option value="English">English</option>
+                    <option value="Environmental Studies">Environmental Studies</option>
+                    <option value="Ethnic Studies">Ethnic Studies</option>
+                    <option value="Foundations of Western Civilization Certificate">Foundations of Western Civilization Certificate</option>
+                    <option value="French">French</option>
+                    <option value="Geography">Geography</option>
+                    <option value="Geology">Geology</option>
+                    <option value="German Studies">German Studies</option>
+                    <option value="GIS and Computational Science, Certificate">GIS and Computational Science, Certificate</option>
+                    <option value="Global Environmental Affairs, Certificate in">Global Environmental Affairs, Certificate in</option>
+                    <option value="Global Gender & Sexuality Studies, Certificate in">Global Gender & Sexuality Studies, Certificate in</option>
+                    <option value="Hebrew & Israel Studies">Hebrew & Israel Studies</option>
+                    <option value="Hindi-Urdu">Hindi-Urdu</option>
+                    <option value="History">History</option>
+                    <option value="Humanities">Humanities</option>
+                    <option value="Integrative Physiology">Integrative Physiology</option>
+                    <option value="International Affairs">International Affairs</option>
+                    <option value="International Media Certificate">International Media Certificate</option>
+                    <option value="Italian">Italian</option>
+                    <option value="Japanese">Japanese</option>
+                    <option value="Jewish Studies">Jewish Studies</option>
+                    <option value="Korean">Korean</option>
+                    <option value="LGBTQ Studies Certificate">LGBTQ Studies Certificate</option>
+                    <option value="Linguistics">Linguistics</option>
+                    <option value="Mathematics">Mathematics</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="minor">Minor(s):</label>
+                <select id="minor" name="minor" required>
+                    <option value="Anthropology (Minor)">Anthropology (Minor)</option>
+                    <option value="Applied Mathematics (Minor)">Applied Mathematics (Minor)</option>
+                    <option value="Arabic (Minor)">Arabic (Minor)</option>
+                    <option value="Architectural Engineering (Minor)">Architectural Engineering (Minor)</option>
+                    <option value="Art History (Minor)">Art History (Minor)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="interests">Interests/Hobbies:</label>
+                <input type="text" id="interests" name="interests" required>
+            </div>
+
+            <button type="submit">Register</button>
+        </form>
+        <p>Already have an account? <a href="/login">Login here</a></p>
+    </div>
+</body>
+</html>
