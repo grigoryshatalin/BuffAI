@@ -104,6 +104,25 @@ app.post('/login', async (req, res) => {
   }
 });
 
+//get and post request for register page from the login page
+app.get('/register', (req, res) => 
+{
+  res.render('register');
+});
+
+// Route to handle registration form submission (POST request)
+app.post('/register', async (req, res) => {
+  const { name, year, major, minor, interests } = req.body;
+  //Save until database is more flushed out
+  //try {
+      //await db.none('INSERT INTO users(name, year, major, minor, interests) VALUES($1, $2, $3, $4, $5)', [name, year, major, minor, interests]);
+      //res.redirect('/login');
+  //} catch (error) {
+     // console.error("Error during registration:", error);
+     // res.render('register', { error: 'An error occurred. Please try again.' });
+ // }
+});
+
 // Start the server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
