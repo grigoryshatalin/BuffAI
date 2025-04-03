@@ -114,13 +114,13 @@ app.get('/register', (req, res) =>
 app.post('/register', async (req, res) => {
   const { name, year, major, minor, interests } = req.body;
   //Save until database is more flushed out
-  //try {
-      //await db.none('INSERT INTO users(name, year, major, minor, interests) VALUES($1, $2, $3, $4, $5)', [name, year, major, minor, interests]);
-      //res.redirect('/login');
-  //} catch (error) {
-     // console.error("Error during registration:", error);
-     // res.render('register', { error: 'An error occurred. Please try again.' });
- // }
+  try {
+      await db.none('INSERT INTO users(name, year, major, minor, interests) VALUES($1, $2, $3, $4, $5)', [name, year, major, minor, interests]);
+      res.redirect('/login');
+  } catch (error) {
+      console.error("Error during registration:", error);
+      res.render('register', { error: 'An error occurred. Please try again.' });
+  }
 });
 
 // Start the server
