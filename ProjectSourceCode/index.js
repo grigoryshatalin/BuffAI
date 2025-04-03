@@ -75,6 +75,35 @@ app.post('/generate', async (req, res) => {
   }
 });
 
+//get request for the login page just to test
+app.get('/login', (req, res) => 
+{
+  res.render('login');
+});
+//post request
+app.post('/login', async (req, res) => {
+  const { username, password } = req.body;
+
+  try {
+      const user = await db.oneOrNone('SELECT * FROM users WHERE username = $1', [username]);
+
+      if (user && await bcrypt.compare(password, user.password)) 
+        {
+          req.session.user = user;
+          res.redirect('/home');
+      } 
+      else 
+      {
+          res.render('login', { error: 'Invalid username or password' });
+      }
+  } 
+  catch (error) 
+  {
+      console.error('Error during login:', error);
+      res.render('login', { error: 'Something went wrong. Please try again.' });
+  }
+});
+
 // Start the server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
