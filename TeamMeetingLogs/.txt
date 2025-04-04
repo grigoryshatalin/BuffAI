@@ -1,0 +1,4 @@
+Week #2 Meeting notes
+- Greg showed us the ollama AI model and functionality
+- Discussed Part C of Lab 10 creating 2 more user stories per person
+- Made sure to verify what progress on our webpage we need to show in lab tomorrow
