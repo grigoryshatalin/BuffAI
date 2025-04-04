@@ -11,9 +11,9 @@ CREATE TABLE students (
 
 DROP TABLE IF EXISTS courses;
 CREATE TABLE courses (
-  course_id NUMERIC PRIMARY KEY,
+  course_id VARCHAR(20) PRIMARY KEY,
   course_name VARCHAR(100) NOT NULL,
-  credit_hours NUMERIC NOT NULL
+  credit_hours NUMERIC NOT NULL,
   specific_major VARCHAR(100) NULL
 );
 
@@ -26,11 +26,15 @@ CREATE TABLE student_courses (
 DROP TABLE IF EXISTS prerequisites;
 
 CREATE TABLE prerequisites (
-  course_id NUMERIC NOT NULL,
-  prerequisite_id NUMERIC NOT NULL,
-  PRIMARY KEY (course_id, prerequisite_id),
-  FOREIGN KEY (course_id) REFERENCES courses(course_id) ON DELETE CASCADE,
-  FOREIGN KEY (prerequisite_id) REFERENCES courses(course_id) ON DELETE CASCADE
+  CREATE TABLE prerequisites (
+    course_id VARCHAR(50) NOT NULL,
+    slot1  TEXT[], 
+    slot2  TEXT[], 
+    slot3  TEXT[], 
+    slot4  TEXT[], 
+    slot5  TEXT[], 
+    PRIMARY KEY (course_id)
+);
 );
 
 
