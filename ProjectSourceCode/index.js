@@ -53,6 +53,10 @@ app.get('/', (req, res) => {
     res.render('testing', { response: null }); // Pass empty response initially
 });
 
+app.get('/welcome', (req, res) => {
+  res.json({status: 'success', message: 'Welcome!'});
+});
+
 // Route to handle Ollama API request
 app.post('/generate', async (req, res) => {
   const { prompt } = req.body; // Extract user input
@@ -76,7 +80,7 @@ app.post('/generate', async (req, res) => {
 });
 
 // Start the server
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+const PORT = process.env.PORT || 3001;
+module.exports = app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
 });

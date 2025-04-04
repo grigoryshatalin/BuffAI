@@ -1,5 +1,5 @@
 {
-    "name": "web-services",
+    "name": "BuffAI",
     "main": "index.js",
     "dependencies": {
         "axios": "^1.1.3",
@@ -9,12 +9,18 @@
         "express-handlebars": "^7.1.2",
         "express-session": "1.17.3",
         "nodemon": "2.0.20",
-        "ollama": "^0.5.14",
-        "pg-promise": "^10.11.1"
+        "pg-promise": "^10.11.1",
+        "mocha": "^6.2.2",
+        "chai": "^4.2.0",
+        "chai-http": "^4.3.0",
+        "npm-run-all": "^4.1.5"
     },
     "scripts": {
-        "postinstall": "sudo curl -fsSL https://ollama.com/install.sh | sh && ollama pull gemma3",
-        "start": "npm run ollama-serve & node index.js",
+        "prestart": "npm install",
+        "postinstall": "sudo curl -fsSL https://ollama.com/install.sh | sh && ollama pull gemma3 && nvm install 22.14.0 && nvm use 22.14.0",
+        "start": "nodemon index.js",
+        "test": "mocha",
+        "testandrun": "npm run prestart && npm run test && npm start",
         "ollama-serve": "ollama serve"
     }
 }
