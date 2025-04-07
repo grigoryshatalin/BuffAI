@@ -1,6 +1,10 @@
 let map;
 let directionsService;
 let directionsRenderer;
+let clickCount = 0;
+let origin = null;
+let destination = null;
+let markers = [];
 
 function initMap() {
   const bounds = {
@@ -13,7 +17,7 @@ function initMap() {
   const center = { lat: 40.0060, lng: -105.2670 };
 
   map = new google.maps.Map(document.getElementById("map"), {
-    zoom: 16,
+    zoom: 10,
     center: center,
     restriction: {
       latLngBounds: bounds,
@@ -43,13 +47,18 @@ function initMap() {
   });
 
   directionsService = new google.maps.DirectionsService();
-  directionsRenderer = new google.maps.DirectionsRenderer();
-  directionsRenderer.setMap(map);
+  directionsRenderer = new google.maps.DirectionsRenderer({
+    map: map,
+    suppressMarkers: false,
+  });
 
-  showCampusDirections(
-    buildings[0].position,
-    buildings[1].position
-  );
+  // Show default route between buildings
+  showCampusDirections(buildings[0].position, buildings[1].position);
+
+  // Add click-to-route support
+  map.addListener("click", (e) => {
+    handleMapClick(e.latLng);
+  });
 }
 
 function showCampusDirections(start, end) {
@@ -67,4 +76,31 @@ function showCampusDirections(start, end) {
       }
     }
   );
+}
+
+function handleMapClick(latLng) {
+  if (clickCount === 0) {
+    origin = latLng;
+    addTempMarker(latLng, "Start");
+    clickCount++;
+  } else if (clickCount === 1) {
+    destination = latLng;
+    addTempMarker(latLng, "End");
+    showCampusDirections(origin, destination);
+    clickCount = 0;
+  }
+}
+
+function addTempMarker(position, title) {
+  const marker = new google.maps.Marker({
+    position: position,
+    map: map,
+    title: title,
+  });
+  markers.push(marker);
+}
+
+function clearTempMarkers() {
+  for (let m of markers) m.setMap(null);
+  markers = [];
 }
