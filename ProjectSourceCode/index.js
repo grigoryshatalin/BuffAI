@@ -7,7 +7,6 @@ const bodyParser = require('body-parser');
 const session = require('express-session');
 const bcrypt = require('bcryptjs');
 const axios = require('axios'); // Used to call Ollama API
-const { Ollama } = require("@langchain/ollama");
 
 // *****************************************************
 // <!-- Section 2 : Connect to DB -->
@@ -53,27 +52,6 @@ app.get('/', (req, res) => {
     res.render('testing', { response: null }); // Pass empty response initially
 });
 
-// Route to handle Ollama API request
-app.post('/generate', async (req, res) => {
-  const { prompt } = req.body; // Extract user input
-
-  try {
-    const ollama = new Ollama({
-      model: "gemma3", // Ensure model is installed and available
-      baseUrl: "http://localhost:11434", // Ollama's server URL
-    });
-
-    // Make the request to Ollama
-    const response = await ollama.invoke(prompt);
-
-    // Log and return the response
-    res.render('testing', { response: response }); // Send response back
-
-  } catch (error) {
-    console.error("Error fetching Ollama response:", error);
-    res.render('testing', { response: "Error generating response. Please try again." });
-  }
-});
 
 //get request for the login page just to test
 app.get('/login', (req, res) => 
@@ -123,8 +101,39 @@ app.post('/register', async (req, res) => {
   }
 });
 
+// Route to interact with Ollama
+app.post('/generate', async (req, res) => {
+  const { prompt } = req.body;
+
+  try {
+    const response = await axios.post('http://ollama:11434/api/chat', {
+      model: 'gemma3:1b',
+      messages: [
+        { role: 'user', content: prompt }
+      ],
+      stream: false
+    });
+
+    const responseContent = response.data.message?.content || 'No response received';
+    res.json({ response: responseContent });
+  } catch (error) {
+    console.error('Error communicating with Ollama:', error.message);
+    
+    if (error.response) {
+      console.error('Error details:', {
+        status: error.response.status,
+        data: error.response.data
+      });
+    }
+    
+    res.status(500).json({ error: 'Failed to communicate with Ollama', details: error.message });
+  }
+});
+
 // Start the server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
 });
+
+
