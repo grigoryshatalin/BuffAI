@@ -1,26 +1,38 @@
 services:
   db:
     image: postgres:14
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: mydb
+    env_file: .env
     volumes:
       - db-data:/var/lib/postgresql/data
+      - ./init_data:/docker-entrypoint-initdb.d
     ports:
-      - '5432:5432'
+      - '5432'
+
+  ollama:
+    image: ollama/ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama-data:/root/.ollama
+    # Using just "serve" as the command since the entrypoint is already set to "ollama"
+    command: serve
 
   web:
-    build: .
-    ports:
-      - '3000:3000'
+    image: node:lts
+    user: 'node'
+    working_dir: /repository
+    env_file: .env
     environment:
       - NODE_ENV=development
     depends_on:
       - db
+      - ollama
+    ports:
+      - '3000:3000'
     volumes:
-      - .:/home/node/app
-    command: "npm start"
-
+      - ./:/repository
+    command: 'npm run start'
 volumes:
   db-data:
+  ollama-data:
+
