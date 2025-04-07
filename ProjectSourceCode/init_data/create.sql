@@ -14,7 +14,7 @@ CREATE TABLE courses (
   course_id VARCHAR(20) PRIMARY KEY,
   course_name VARCHAR(100) NOT NULL,
   credit_hours NUMERIC NOT NULL,
-  specific_major VARCHAR(100) NULL
+  specific_major VARCHAR(100) NULL --only {specific_major}s can take this course 
 );
 
 DROP TABLE IF EXISTS student_courses;
@@ -24,18 +24,28 @@ CREATE TABLE student_courses (
 );
   
 DROP TABLE IF EXISTS prerequisites;
-
 CREATE TABLE prerequisites (
-  CREATE TABLE prerequisites (
-    course_id VARCHAR(50) NOT NULL,
-    slot1  TEXT[], 
-    slot2  TEXT[], 
-    slot3  TEXT[], 
-    slot4  TEXT[], 
-    slot5  TEXT[], 
-    PRIMARY KEY (course_id)
+  course_id VARCHAR(50) NOT NULL, 
+  slot1  TEXT[], 
+  slot2  TEXT[], 
+  slot3  TEXT[],  -- each slot can have 0, 1, or more classes, you must have taken a course from each of the (non NULL) slots to complete prerequisites 
+  slot4  TEXT[], 
+  slot5  TEXT[], 
+  PRIMARY KEY (course_id)
 );
+
+DROP TABLE IF EXISTS degrees;
+CREATE TABLE degrees (
+  major  VARCHAR (5) NOT NULL, -- ex. major in computer science is CSCI, major in Theatre is THTR, etc.. 
+  degreeName VARCHAR(5) NOT NULL,  -- ex. BA in CSCI is BACS, BS in Applied Math is BSAM, etc..
+  reqs JSONB,
+  UpperDivisonMajor NUMERIC,  -- ex. major is comp sci, then 30 hours of CSCI 3000+ courses are needed
+  HumSocSci NUMERIC,
+  writing NUMERIC, 
+  elective NUMERIC;
+
 );
+
 
 
 

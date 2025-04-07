@@ -130,8 +130,6 @@ def write_to_file(course_data, output_file):
             prereqs = [str(prerequisite if prerequisite else "NULL") for prerequisite in prerequisites]
             file.write(f"({course_id}, {', '.join(prereqs)})\n")
 
-
-
 if __name__ == "__main__":
     input_file = "ProjectSourceCode/init_data/dataLogs/courses.txt"
     output_file = "ProjectSourceCode/init_data/dataLogs/ParsedReq.txt"
