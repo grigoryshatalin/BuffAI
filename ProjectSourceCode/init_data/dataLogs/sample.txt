@@ -1,0 +1,69 @@
+ASEN 1320	Aerospace Computing and Engineering Applications	4
+or CHEN 1310	Introduction to Engineering Computing
+or CSCI 1300	Computer Science 1: Starting Computing
+or ECEN 1310	Introduction to C Programming
+or MCEN 1030	Introduction to Engineering Computing
+ASEN 1400/ASTR 2500	Gateway to Space	3
+or ASEN 1403	Introduction to Rocket Engineering
+or GEEN 1400	Engineering Projects
+or ECEN 1400	Introduction to Digital and Analog Electronics
+ASEN 2401	Statics	3
+or CVEN 2121	Analytical Mechanics 1
+or GEEN 2851	Statics for Engineers
+or MCEN 2023	Statics and Structures
+ASEN 2402	Thermodynamics	3
+or AREN 2110	Thermodynamics
+or EVEN 3012	Thermodynamics for Environmental Science and Engineering
+or GEEN 3852	Thermodynamics for Engineers
+or MCEN 3012	Thermodynamics
+ASEN 2403	Dynamics	3
+or CVEN 3111	Analytical Mechanics 2
+or MCEN 2043	Dynamics
+ASEN 2501	Introduction to Astronautics	3
+ASEN 2502	Introduction to Aeronautics	3
+ASEN 3401	Aerospace Structures	3
+ASEN 3402	Aerospace Heat Transfer	3
+ASEN 3403	Aerodynamics	3
+ASEN 3404	Aerospace Dynamics and Control	3
+ASEN 3501	Aerospace Experimental Methods	3
+ASEN 3502	Aerospace Computational Methods	3
+ASEN 3503	Aerospace Electronics	3
+ASEN 4013	Foundations of Propulsion	3
+ASEN 4018	Senior Projects 1: Design Synthesis	4
+ASEN 4028	Senior Projects 2: Design Practicum	4
+Astronautics Focus: 1	6
+ASEN 3405
+Astrodynamics	
+ASEN 4401
+Aerospace Communication Systems	
+Aeronautics Focus: 1	6
+ASEN 3406
+Aircraft Dynamics	
+ASEN 4402
+Aerospace Materials and Structural Analysis	
+Basic Engineering Electives	
+Required Math	
+APPM 1350	Calculus 1 for Engineers	4
+or APPM 1345	Calculus 1 with Algebra, Part B
+or MATH 1300	Calculus 1
+APPM 1360	Calculus 2 for Engineers	4
+or MATH 2300	Calculus 2
+APPM 2350	Calculus 3 for Engineers	4
+or MATH 2400	Calculus 3
+APPM 2360	Introduction to Differential Equations with Linear Algebra	4
+or MATH 2130
+& MATH 3430	Introduction to Linear Algebra for Non-Mathematics Majors
+and Ordinary Differential Equations
+or MATH 2135
+& MATH 3430	Introduction to Linear Algebra for Mathematics Majors
+and Ordinary Differential Equations
+Required Science	
+MCEN 1024	Chemistry for Energy and Materials Science	3
+or CHEM 1113	General Chemistry 1
+or CHEM 1400	Foundations of Chemistry
+or CHEN 1201	General Chemistry for Engineers 1
+or CHEN 1211	Accelerated Chemistry for Engineers
+PHYS 1110	General Physics 1	4
+or PHYS 1115	General Physics 1 for Majors
+PHYS 1120	General Physics 2	4
+or PHYS 1125	General Physics 2 for Majors
