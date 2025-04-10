@@ -71,6 +71,34 @@ describe('Testing Register Student API', () => {
       });
   });
 });
+describe('Testing /generate API', () => {
+  it('positive : /generate should return a response when given a valid prompt', done => {
+    chai
+      .request(server)
+      .post('/generate')
+      .send({ prompt: 'What is the capital of France?' })
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        expect(res.body).to.have.property('response');
+        expect(res.body.response).to.be.a('string');
+        done();
+      });
+  });
+
+  it('negative : /generate should return an error when the request body is empty', done => {
+    chai
+      .request(server)
+      .post('/generate')
+      .send({}) // No prompt
+      .end((err, res) => {
+        expect(res).to.have.status(500);
+        expect(res.body).to.have.property('error');
+        expect(res.body.error).to.equal('Failed to communicate with Ollama');
+        done();
+      });
+  });
+});
+
 
 
 
