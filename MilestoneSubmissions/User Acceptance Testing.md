@@ -50,7 +50,7 @@ This feature shows a route between two user-inputted locations using the Google 
 - Destination of CU's Campus
 
 ### Test Cases
-| Test ID | Test Description                        | Input                                 | Expected Result                          |
+| Test ID | Test Description                        | Input                                 | Expected Result                                        |
 |---------|-----------------------------------------|---------------------------------------|--------------------------------              ----------|
 | TC003   | Show route on map between two locations | User input alid origin and destination| Route drawn on map with time & distance info shown     |
 | TC004   | Handle invalid location input           | "Xyzabc123" to "Seattle"              | Show "invalid input" message                           |
