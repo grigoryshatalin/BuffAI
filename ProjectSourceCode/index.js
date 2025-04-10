@@ -7,6 +7,7 @@ const bodyParser = require('body-parser');
 const session = require('express-session');
 const bcrypt = require('bcryptjs');
 const axios = require('axios'); // Used to call Ollama API
+const validator = require('validator'); // run `npm install validator` if not installed
 
 // *****************************************************
 // <!-- Section 2 : Connect to DB -->
@@ -82,6 +83,11 @@ app.post('/login', async (req, res) => {
   }
 });
 
+//testing
+app.get('/welcome', (req, res) => {
+  res.json({status: 'success', message: 'Welcome!'});
+});
+
 //get and post request for register page from the login page
 app.get('/register', (req, res) => 
 {
@@ -89,17 +95,49 @@ app.get('/register', (req, res) =>
 });
 
 // Route to handle registration form submission (POST request)
+
 app.post('/register', async (req, res) => {
-  const { name, year, major, minor, interests } = req.body;
-  //Save until database is more flushed out
+  const {
+    first_name,
+    last_name,
+    email,
+    password,
+    year,
+    major,
+    degree
+  } = req.body;
+
+  // ✅ Simple validation logic
+  if (
+    !first_name ||
+    !last_name ||
+    !email ||
+    !validator.isEmail(email) ||
+    !password ||
+    password.length < 6 || // minimum length check (you can change this)
+    !year ||
+    !major ||
+    !degree
+  ) {
+    return res.status(400).json({ message: 'Invalid input' });
+  }
+
   try {
-      await db.none('INSERT INTO users(name, year, major, minor, interests) VALUES($1, $2, $3, $4, $5)', [name, year, major, minor, interests]);
-      res.redirect('/login');
+    await db.none(
+      `INSERT INTO students (
+        first_name, last_name, email, password, year, major, degree
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+      [first_name, last_name, email, password, year, major, degree]
+    );
+
+    res.redirect('/login');
   } catch (error) {
-      console.error("Error during registration:", error);
-      res.render('register', { error: 'An error occurred. Please try again.' });
+    console.error("Error during registration:", error);
+    res.status(500).json({ message: 'Server error. Please try again.' });
   }
 });
+
+
 
 // Route to interact with Ollama
 app.post('/generate', async (req, res) => {
@@ -111,7 +149,7 @@ app.post('/generate', async (req, res) => {
       messages: [
         { role: 'user', content: prompt }
       ],
-      stream: false
+      stream: true
     });
 
     const responseContent = response.data.message?.content || 'No response received';
@@ -129,11 +167,13 @@ app.post('/generate', async (req, res) => {
     res.status(500).json({ error: 'Failed to communicate with Ollama', details: error.message });
   }
 });
-
-// Start the server
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-});
+module.exports = app.listen(3000);
+console.log(`Server running on http://localhost:${PORT}`);
+// Start the server
+// const PORT = process.env.PORT || 3000;
+// app.listen(PORT, () => {
+//     console.log(`Server running on http://localhost:${PORT}`);
+// });
 
 

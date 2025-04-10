@@ -31,7 +31,7 @@ services:
       - '3000:3000'
     volumes:
       - ./:/repository
-    command: 'npm run start'
+    command: 'npm run testandrun'
 volumes:
   db-data:
   ollama-data:

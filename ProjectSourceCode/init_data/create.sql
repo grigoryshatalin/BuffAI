@@ -6,7 +6,8 @@ CREATE TABLE students (
   email VARCHAR(200) NOT NULL,
   year VARCHAR(15) NOT NULL,
   major VARCHAR(30) NOT NULL,
-  degree VARCHAR(15) NOT NULL
+  degree VARCHAR(15) NOT NULL,
+  password VARCHAR(255) NOT NULL
 );
 
 DROP TABLE IF EXISTS courses;
