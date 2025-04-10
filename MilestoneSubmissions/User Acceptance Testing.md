@@ -1,9 +1,11 @@
-# Team Ollama – Test Plan Document
+# Team BuffAI – Test Plan Document
 
 **Team Members:**
-- Alex Johnson (Frontend)
-- Grigory Sharapov (Backend/API Integration)
-- Priya Mehta (Testing Lead)
+- Greg (Team Lead)
+- James
+- Ari
+- Spencer
+- Marcus 
 
 **Project Name:** BuffAI
 
