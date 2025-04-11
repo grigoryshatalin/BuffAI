@@ -7,7 +7,9 @@ CREATE TABLE students (
   major VARCHAR(30) NOT NULL,
   degree VARCHAR(15) NOT NULL,
   minor VARCHAR (30), 
-  password VARCHAR(50) NOT NULL
+  password VARCHAR(50) NOT NULL,
+  FOREIGN KEY (major, degree) REFERENCES degrees(major, degreeName),
+  FOREIGN KEY (minor) REFERENCES minors(minor)
 );
 
 DROP TABLE IF EXISTS courses;
@@ -20,13 +22,13 @@ CREATE TABLE courses (
 
 DROP TABLE IF EXISTS student_courses;
 CREATE TABLE student_courses (
-  course_id INTEGER NOT NULL REFERENCES courses (course_id),
+  course_id VARCHAR(20) NOT NULL REFERENCES courses (course_id),
   student_id INTEGER NOT NULL REFERENCES students (student_id)
 );
   
 DROP TABLE IF EXISTS prerequisites;
 CREATE TABLE prerequisites (
-  course_id VARCHAR(50) NOT NULL, 
+  course_id VARCHAR(50) NOT NULL REFERENCES courses(course_id), 
   slot1  TEXT[], 
   slot2  TEXT[], 
   slot3  TEXT[],  -- each slot can have 0, 1, or more classes, you must have taken a course from each of the (non NULL) slots to complete prerequisites 
