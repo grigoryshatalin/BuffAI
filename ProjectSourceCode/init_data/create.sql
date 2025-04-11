@@ -1,7 +1,7 @@
 DROP TABLE IF EXISTS students;
 CREATE TABLE students (
   student_id SERIAL PRIMARY KEY,
-  fullname VARCHAR(100),
+  fullName VARCHAR(100),
   email VARCHAR(200) NOT NULL,
   year VARCHAR(15) NOT NULL,
   major VARCHAR(30) NOT NULL,
