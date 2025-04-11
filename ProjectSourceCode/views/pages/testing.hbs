@@ -2,46 +2,184 @@
   .terminal-container {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
     height: 100vh;
     background-color: #1e1e1e;
     color: white;
     font-family: monospace;
+    padding: 1em;
+    overflow: hidden;
   }
+
+  .terminal-output {
+    flex: 1;
+    overflow-y: auto;
+    width: 100%;
+    padding: 1em;
+  }
+
   .input-box {
     border: none;
-    background: none;
+    background: #2d2d2d;
     color: white;
     font-size: 18px;
-    width: 300px;
+    width: 100%;
+    padding: 0.5em;
+    margin-top: 0.5em;
     outline: none;
   }
-  .blinking-cursor {
-    display: inline-block;
-    width: 10px;
-    height: 20px;
-    background-color: dimgray;
-    animation: blink 1s infinite;
+
+  button {
+    margin-top: 0.5em;
+    background-color: #3a3a3a;
+    color: white;
+    border: none;
+    padding: 0.4em 1em;
+    cursor: pointer;
+    font-family: monospace;
   }
-  @keyframes blink {
-    0% { opacity: 1; }
-    50% { opacity: 0; }
-    100% { opacity: 1; }
+
+  button:hover {
+    background-color: #4f4f4f;
+  }
+
+  a {
+    color: #00afff;
+    text-decoration: underline;
+  }
+
+  strong {
+    font-weight: bold;
+    color: #ffff66;
+  }
+
+  em {
+    font-style: italic;
+    color: #cccccc;
+  }
+
+  ul {
+    padding-left: 1.5em;
+    margin: 0.25em 0;
+  }
+
+  li {
+    margin-bottom: 0.25em;
   }
 </style>
 
 <div class="terminal-container">
   <span>Enter Command:</span>
-  <form action="/generate" method="POST">
-  <input name="prompt" class="input-box" type="text" required autofocus>
-  <button type="submit">Submit</button>
-</form>
+  <form id="prompt-form">
+    <input name="prompt" class="input-box" type="text" required autofocus>
+    <button type="submit">Submit</button>
+  </form>
 
-
-  {{#if response}}
-    <pre>Response: {{response}}</pre>
-  {{/if}}
+  <div id="output" class="terminal-output"></div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script>
+  document.getElementById('prompt-form').addEventListener('submit', e => {
+    e.preventDefault();
+    const prompt = e.target.prompt.value;
+    const output = document.getElementById('output');
+    output.innerHTML = '<div id="spinner">⏳ Thinking...</div>';
+
+    let fullBuffer = '';
+    let renderIndex = 0;
+    let rendering = false;
+
+    const eventSource = new EventSource(`/stream?prompt=${encodeURIComponent(prompt)}`);
+
+    eventSource.onmessage = (event) => {
+      fullBuffer += event.data;
+
+      if (!rendering && fullBuffer.length >= 40) {
+        document.getElementById('spinner')?.remove();
+        rendering = true;
+        startRendering();
+      }
+    };
+
+    eventSource.onerror = () => {
+      eventSource.close();
+    };
+
+    function startRendering() {
+      const interval = setInterval(() => {
+        if (renderIndex < fullBuffer.length) {
+          renderIndex++;
+          const current = fullBuffer.slice(0, renderIndex);
+          output.innerHTML = formatSections(current);
+          output.scrollTop = output.scrollHeight;
+        } else {
+          if (eventSource.readyState === 2) {
+            clearInterval(interval);
+            output.innerHTML = formatSections(fullBuffer) + "<br><em>[Connection closed]</em>";
+          }
+        }
+      }, 10);
+    }
+
+    function formatSections(text) {
+      const tokens = marked.lexer(text);
+      let html = '';
+      let currentSection = {
+        title: 'Introduction',
+        body: ''
+      };
+
+      const sections = [];
+
+      for (let token of tokens) {
+        if (token.type === 'paragraph') {
+          const trimmed = token.text.trim();
+          const isBoldHeader = /^\*\*.*\*\*$/.test(trimmed);
+
+          if (isBoldHeader) {
+            // Save previous section
+            if (currentSection.body.trim()) sections.push(currentSection);
+
+            currentSection = {
+              title: trimmed.replace(/\*\*/g, ''),
+              body: ''
+            };
+          } else {
+            currentSection.body += `<div>${marked.parseInline(token.text)}</div>`;
+          }
+        } else if (token.type === 'list') {
+          const listHTML = marked.parser([token]);
+          currentSection.body += listHTML;
+        } else {
+          currentSection.body += marked.parser([token]);
+        }
+      }
+
+      // Push the last section
+      if (currentSection.body.trim()) {
+        sections.push(currentSection);
+      }
+
+      // Render sections
+      for (let sec of sections) {
+        html += `
+          <div style="margin-top: 1em;">
+            <div style="font-weight: bold; font-size: 1.2em;">${sec.title}</div>
+            <div style="margin-left: 1.5em; margin-top: 0.3em;">
+              ${sec.body}
+            </div>
+          </div>
+        `;
+      }
+
+      return html;
+    }
+  });
+</script>
+
+
+
+
+
 
 {{> footer}}

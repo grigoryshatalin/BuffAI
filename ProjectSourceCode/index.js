@@ -8,6 +8,7 @@ const session = require('express-session');
 const bcrypt = require('bcryptjs');
 const axios = require('axios'); // Used to call Ollama API
 const validator = require('validator'); // run `npm install validator` if not installed
+const { Readable } = require('stream');
 
 // *****************************************************
 // <!-- Section 2 : Connect to DB -->
@@ -140,33 +141,46 @@ app.post('/register', async (req, res) => {
 
 
 // Route to interact with Ollama
-app.post('/generate', async (req, res) => {
-  const { prompt } = req.body;
+
+app.get('/stream', async (req, res) => {
+  const prompt = req.query.prompt;
+  res.setHeader('Content-Type', 'text/event-stream');
+  res.setHeader('Cache-Control', 'no-cache');
+  res.setHeader('Connection', 'keep-alive');
 
   try {
-    const response = await axios.post('http://ollama:11434/api/chat', {
-      model: 'gemma3:1b',
-      messages: [
-        { role: 'user', content: prompt }
-      ],
-      stream: true
+    const ollamaRes = await axios({
+      method: 'post',
+      url: 'http://ollama:11434/api/chat',
+      responseType: 'stream',
+      data: {
+        model: 'gemma3:1b',
+        messages: [{ role: 'user', content: prompt }],
+        stream: true
+      }
     });
 
-    const responseContent = response.data.message?.content || 'No response received';
-    res.json({ response: responseContent });
-  } catch (error) {
-    console.error('Error communicating with Ollama:', error.message);
-    
-    if (error.response) {
-      console.error('Error details:', {
-        status: error.response.status,
-        data: error.response.data
-      });
-    }
-    
-    res.status(500).json({ error: 'Failed to communicate with Ollama', details: error.message });
+    ollamaRes.data.on('data', chunk => {
+      const lines = chunk.toString().split('\n').filter(Boolean);
+      for (const line of lines) {
+        try {
+          const parsed = JSON.parse(line);
+          const text = parsed.message?.content || parsed.response || '';
+          res.write(`data: ${text}\n\n`);
+        } catch (e) {
+          console.error('Stream parse error:', e);
+        }
+      }
+    });
+
+    ollamaRes.data.on('end', () => res.end());
+  } catch (err) {
+    console.error('Streaming error:', err.message);
+    res.write(`data: ERROR: ${err.message}\n\n`);
+    res.end();
   }
 });
+
 const PORT = process.env.PORT || 3000;
 module.exports = app.listen(3000);
 console.log(`Server running on http://localhost:${PORT}`);
