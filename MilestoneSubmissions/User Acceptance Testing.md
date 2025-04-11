@@ -1,45 +1,41 @@
-# Team Ollama – Test Plan Document
+# Team BuffAI – Test Plan Document
 
 **Team Members:**
-- Alex Johnson (Frontend)
-- Grigory Sharapov (Backend/API Integration)
-- Priya Mehta (Testing Lead)
+- Greg (Team Lead)
+- James
+- Ari
+- Spencer
+- Marcus 
 
-**Project Name:** SmartEdu Assistant
+**Project Name:** BuffAI
 
 ---
 
-## Feature 1: Ollama Chat Response (AI Messaging)
+## Feature 1: Ollama Chat Response and Class Planning (AI Messaging)
 
 ### Description
-This feature enables users to send messages to the Ollama LLM-based API and receive AI-generated responses in a chatbot interface.
+This feature enables users to send messages to the Ollama LLM-based API and receive AI-generated responses in a chatbot interface. Ollama API will also be used in formulating a general degree plan based on your major and minor. 
 
 ### Test Environment
 - **Environment:** Localhost (`http://localhost:3000`)
-- **Server Runtime:** Node.js v22
-- **Frontend Framework:** React
-- **Test Tools:** Postman, Jest
+
 
 ### Test Data
 - Any string message, such as `"Hello"` or `"What is stress?"`
+- User input data about their year, major, and minor from a dropdown list in the registration page
 
 ### Test Cases
-| Test ID | Test Description                            | Input Message         | Expected Result                      |
-|---------|---------------------------------------------|-----------------------|--------------------------------------|
-| TC001   | Verify Ollama sends any response            | "Hello"               | Non-empty response from the API      |
-| TC002   | Verify response format                      | "Test message"        | JSON with `message` or `text` field |
-| TC003   | Verify error on empty input                 | ""                    | Error message or validation warning  |
+| Test ID | Test Description                            | Input                                | Expected Result        |
+|---------|---------------------------------------------|-------------------------------      -|------------------------|
+| TC001   | Verify Ollama sends any response            | "Hello"                              | Non-empty response from the API|
+| TC002   | Verify Ollama's degree planning ability     | Information from registration fields | A CSV file of of classes organized b                                                         of Year, Major, and Minor               by year you must take them to complete your degreee
+                                                          
+
 
 ### Testers
-- Priya Mehta (QA)
-- Grace Chen (Beta tester from LWTech's Psychology Club)
+- Spencer
+- Greg
 
-### Test Results
-- TC001: ✅ Response received: `"Hi, how can I help you today?"`
-- TC002: ✅ API responded with valid JSON structure
-- TC003: ✅ Proper validation error shown in UI
-
----
 
 ## Feature 2: Google Maps Directions Between Two Locations
 
@@ -47,30 +43,26 @@ This feature enables users to send messages to the Ollama LLM-based API and rece
 This feature shows a route between two user-inputted locations using the Google Maps API.
 
 ### Test Environment
-- **Environment:** Deployed cloud version on Vercel (`https://smartedu.vercel.app`)
-- **Test Tools:** Cypress for UI test, manual browser testing
+- **Environment:** Localhost (`http://localhost:3000`)
 
 ### Test Data
-- Origin: "Lake Washington Institute of Technology"
-- Destination: "University of Washington Seattle"
+- Origin on CU's Campus
+- Destination of CU's Campus
 
 ### Test Cases
-| Test ID | Test Description                        | Input                          | Expected Result                                         |
-|---------|-----------------------------------------|--------------------------------|--------------------------------------------------------|
-| TC004   | Show route on map between two locations | Valid origin and destination   | Route drawn on map with time & distance info shown     |
-| TC005   | Handle invalid location input           | "Xyzabc123" to "Seattle"       | Show "Location not found" or graceful fallback         |
-| TC006   | Directions with real-time traffic       | Same as TC004 during rush hour | Slightly altered route with live traffic considerations|
+| Test ID | Test Description                        | Input                                 | Expected Result                                        |
+|---------|-----------------------------------------|---------------------------------------|--------------------------------              ----------|
+| TC003   | Show route on map between two locations | User input alid origin and destination| Route drawn on map with time & distance info shown     |
+| TC004   | Handle invalid location input           | "Xyzabc123" to "Seattle"              | Show "invalid input" message                           |
+| TC005   | Take in user input fields               | Same as TC00p3                        | "Search" button changes color and allows you to        |
+            of origin and desination                                                           inquire the google maps API
 
 ### Testers
-- Alex Johnson (Frontend QA)
-- Student volunteers from LWTech Computer Science Club
+- Ari
+- Spencer
+- James
 
-### Test Results
-- TC004: ✅ Route rendered in ~3 seconds, accurate path.
-- TC005: ✅ Error message: "Please enter a valid location."
-- TC006: ✅ Route showed traffic adjustment near I-5.
 
----
 
 ## Feature 3: Rate My Professor API Integration
 
@@ -78,31 +70,22 @@ This feature shows a route between two user-inputted locations using the Google 
 Allows users to search for and display information about professors based on college and professor name, using Rate My Professor's unofficial API.
 
 ### Test Environment
-- **Environment:** Localhost and Vercel production
-- **Test Tools:** Postman for API testing, Browser console for network
+- **Environment:** Localhost (`http://localhost:3000`)
 
 ### Test Data
-- Professor: "John Smith"
-- School: "University of Washington"
+- User input professor Name
+- User input class name or class code
+
 
 ### Test Cases
-| Test ID | Test Description                     | Input                             | Expected Output                                      |
-|---------|--------------------------------------|-----------------------------------|------------------------------------------------------|
-| TC007   | API returns professor information    | "John Smith", "University of WA" | JSON object with rating, department, and reviews     |
-| TC008   | API handles unknown professor input  | "DoesNotExist", "UW"             | JSON response: `{ error: "Not found" }`              |
-| TC009   | Test API latency                     | Multiple valid queries            | All responses < 1.2s                                 |
+| Test ID | Test Description                     | Input                               | Expected Output                                      |
+|---------|--------------------------------------|-----------------------------------  |------------------------------------------------------|
+| TC006   | API returns professor ratings        | Valid Professor Name, Class name    | JSON object with rating, department, and reviews     |
+| TC007   | API handles unknown professor input  | Invalid/nonexistent professor/class | JSON response: `{ error: "Not found" }`              |
+                
 
 ### Testers
-- Grigory Sharapov (Backend QA)
-- Beta testers from CS department
+- Marcus
+- James
 
-### Test Results
-- TC007: ✅ Response returned professor rating = 4.5, 20 reviews.
-- TC008: ✅ API returned `{ error: "Not found" }` as expected.
-- TC009: ✅ All queries responded in under 900ms.
 
----
-
-## Summary
-
-All critical features passed functional and user acceptance tests. Minor styling tweaks for map labels were noted but not functional blockers. Full results will be appended in the final project report.

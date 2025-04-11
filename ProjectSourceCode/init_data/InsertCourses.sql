@@ -8785,7 +8785,6 @@ VALUES
 ('THTR 6959', 'Masters Thesis', 1, NULL),
 ('THTR 7004', 'Colorado Shakespeare Festival Summer Immersion', 3, NULL),
 ('THTR 8999', 'Doctoral Dissertation', 1, NULL),
-('TDXD 5005', 'Design Theory', 3, NULL),
 ('TDXD 5105', 'Collaboratory in Experience Design 1', 3, NULL),
 ('TDXD 5500', 'Experience Design Atelier 1: Design Evolution and Expression', 3, NULL),
 ('TDXD 5700', 'Experience Design Atelier 2: Introduction to Design Graphics', 3, NULL),
