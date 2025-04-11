@@ -7,7 +7,7 @@ CREATE TABLE students (
   major VARCHAR(30) NOT NULL,
   degree VARCHAR(15) NOT NULL,
   minor VARCHAR (30), 
-  password VARCHAR(50) NOT NULL,
+  password VARCHAR(255) NOT NULL,
   FOREIGN KEY (major, degree) REFERENCES degrees(major, degreeName),
   FOREIGN KEY (minor) REFERENCES minors(minor)
 );

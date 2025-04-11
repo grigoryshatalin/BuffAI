@@ -1,6 +1,6 @@
 <header>
-  <nav class="navbar navbar-expand-sm border-bottom">
-    <div class="container">
+  <nav class="navbar navbar-expand-sm navbar-light border-bottom" style="background-color: #fff;">
+    <div class="container-fluid">
       <button
         class="navbar-toggler ms-auto"
         type="button"
@@ -9,18 +9,31 @@
         aria-controls="navbar"
         aria-expanded="false"
         aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
+        <span class="navbar-toggler-icon" style="background-color: #bfa133;"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbar-collapse">
-        <ul class="navbar-nav me-auto">
+        <ul class="navbar-nav" style="flex-grow: 1; display: flex; justify-content: flex-start; width: 100%; padding-left: 0; margin-left: 0;">
           <li class="nav-item">
-            <a class="nav-link" href="/discover">Discover</a>
+            <a class="nav-link" href="/" style="font-weight: bold; font-size: 1.1rem; color: #000; transition: color 0.3s ease;">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/login" style="font-weight: bold; font-size: 1.1rem; color: #000; transition: color 0.3s ease;">Login</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/maps" style="font-weight: bold; font-size: 1.1rem; color: #000; transition: color 0.3s ease;">Maps</a>
           </li>
         </ul>
-        <div class="nav-item me-1">
-          <a class="nav-link" href="/logout">Logout</a>
+        <div class="nav-item">
+          <a class="nav-link" href="/logout" style="font-weight: bold; font-size: 1.1rem; color: #000; transition: color 0.3s ease;">Logout</a>
         </div>
       </div>
     </div>
   </nav>
 </header>
+
+<!-- Inline CSS for hover effect -->
+<style>
+  .nav-link:hover {
+    color: #9c8c2a; /* Darker gold on hover */
+  }
+</style>
