@@ -1,12 +1,13 @@
 DROP TABLE IF EXISTS students;
 CREATE TABLE students (
   student_id SERIAL PRIMARY KEY,
-  first_name VARCHAR(50) NOT NULL,
-  last_name VARCHAR(50) NOT NULL,
+  fullname VARCHAR(100),
   email VARCHAR(200) NOT NULL,
   year VARCHAR(15) NOT NULL,
   major VARCHAR(30) NOT NULL,
-  degree VARCHAR(15) NOT NULL
+  degree VARCHAR(15) NOT NULL,
+  minor VARCHAR (30), 
+  password VARCHAR(50) NOT NULL
 );
 
 DROP TABLE IF EXISTS courses;
@@ -36,16 +37,26 @@ CREATE TABLE prerequisites (
 
 DROP TABLE IF EXISTS degrees;
 CREATE TABLE degrees (
-  major  VARCHAR (5) NOT NULL, -- ex. major in computer science is CSCI, major in Theatre is THTR, etc.. 
-  degreeName VARCHAR(5) NOT NULL,  -- ex. BA in CSCI is BACS, BS in Applied Math is BSAM, etc..
+  major  VARCHAR (100) NOT NULL, 
+  degreeName VARCHAR(5) NOT NULL,  -- ex. BA, BS
+  classCode VARCHAR(4),   -- ex. major in computer science is CSCI, major in Theatre is THTR, etc.. 
   reqs JSONB,
-  UpperDivisonMajor NUMERIC,  -- ex. major is comp sci, then 30 hours of CSCI 3000+ courses are needed
-  HumSocSci NUMERIC,
-  writing NUMERIC, 
-  elective NUMERIC;
-
+  UpperDivisonCreds NUMERIC,
+  electives NUMERIC,
+  totalCreditHours NUMERIC,
+  hasMinor BOOLEAN,
+  PRIMARY KEY (major, degreeName)
 );
 
+DROP TABLE IF EXISTS minors;
+CREATE TABLE minors(
+  minor varchar(100) PRIMARY KEY,
+  classCode VARCHAR(5),
+  reqs JSONB,
+  UpperDivisonCreds NUMERIC,
+  majorElectives NUMERIC,
+  totalCreditHours NUMERIC
+);
 
 
 
