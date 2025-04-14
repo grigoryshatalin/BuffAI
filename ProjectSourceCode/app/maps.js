@@ -5,8 +5,9 @@ let clickCount = 0;
 let origin = null;
 let destination = null;
 let markers = [];
+let startAutocomplete, endAutocomplete;
 
-function initMap() {
+function initMap(){
   const bounds = {
     north: 40.0145,
     south: 39.995307,
@@ -17,33 +18,14 @@ function initMap() {
   const center = { lat: 40.0060, lng: -105.2670 };
 
   map = new google.maps.Map(document.getElementById("map"), {
-    zoom: 10,
+    zoom: 15,
     center: center,
     restriction: {
       latLngBounds: bounds,
       strictBounds: true,
     },
-  });
-
-  const buildings = [
-    { name: "Engineering Center", position: { lat: 40.0063, lng: -105.2628 } },
-    { name: "Norlin Library", position: { lat: 40.0076, lng: -105.2719 } },
-  ];
-
-  buildings.forEach((building) => {
-    const marker = new google.maps.Marker({
-      position: building.position,
-      map: map,
-      title: building.name,
-    });
-
-    const infoWindow = new google.maps.InfoWindow({
-      content: `<strong>${building.name}</strong>`,
-    });
-
-    marker.addListener("click", () => {
-      infoWindow.open(map, marker);
-    });
+    maxZoom: 21,
+    minZoom: 0,
   });
 
   directionsService = new google.maps.DirectionsService();
@@ -52,46 +34,66 @@ function initMap() {
     suppressMarkers: false,
   });
 
-  // Show default route between buildings
-  showCampusDirections(buildings[0].position, buildings[1].position);
+  map.addListener("click", (e) => {handleMapClick(e.latLng);});
 
-  // Add click-to-route support
-  map.addListener("click", (e) => {
-    handleMapClick(e.latLng);
-  });
+  startAutocomplete = new google.maps.places.Autocomplete(document.getElementById("start"));
+  endAutocomplete = new google.maps.places.Autocomplete(document.getElementById("end"));
+
+  startAutocomplete.bindTo("bounds", map);
+  endAutocomplete.bindTo("bounds", map);
 }
 
-function showCampusDirections(start, end) {
-  directionsService.route(
-    {
-      origin: start,
-      destination: end,
+function handleMapClick(latLng){
+  if(clickCount === 0){
+    origin = latLng;
+    addTempMarker(latLng, "Start");
+    clickCount++;
+  }else if(clickCount === 1){
+    destination = latLng;
+    addTempMarker(latLng, "End");
+    showRoute(origin, destination);
+    clickCount = 0;
+  }
+}
+
+function calculateRoute(){
+  const startInput = document.getElementById("start").value;
+  const endInput = document.getElementById("end").value;
+
+  if(!startInput || !endInput){
+    alert("Please enter both start and end places.");
+    return;
+  }
+
+  directionsService.route({
+      origin: startInput,
+      destination: endInput,
       travelMode: google.maps.TravelMode.WALKING,
-    },
-    (result, status) => {
-      if (status === "OK") {
+    }, (result, status) => {
+      if(status === "OK"){
+        clearTempMarkers();
         directionsRenderer.setDirections(result);
-      } else {
-        console.error("Directions request failed due to " + status);
+      }else{
+        alert("Route search failed: " + status);
       }
     }
   );
 }
 
-function handleMapClick(latLng) {
-  if (clickCount === 0) {
-    origin = latLng;
-    addTempMarker(latLng, "Start");
-    clickCount++;
-  } else if (clickCount === 1) {
-    destination = latLng;
-    addTempMarker(latLng, "End");
-    showCampusDirections(origin, destination);
-    clickCount = 0;
-  }
+function showRoute(start, end){
+  directionsService.route({
+      origin: start,
+      destination: end,
+      travelMode: google.maps.TravelMode.WALKING,
+    }, (result, status) => {
+      if(status === "OK"){
+        directionsRenderer.setDirections(result);
+      }else{console.error("Route calculation failed: " + status);}
+    }
+  );
 }
 
-function addTempMarker(position, title) {
+function addTempMarker(position, title){
   const marker = new google.maps.Marker({
     position: position,
     map: map,
@@ -100,7 +102,11 @@ function addTempMarker(position, title) {
   markers.push(marker);
 }
 
-function clearTempMarkers() {
+function clearTempMarkers(){
   for (let m of markers) m.setMap(null);
   markers = [];
+  clickCount = 0;
+  origin = null;
+  destination = null;
+  directionsRenderer.setDirections({ routes: [] }); // Clear route line
 }

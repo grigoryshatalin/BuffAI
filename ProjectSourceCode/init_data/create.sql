@@ -48,6 +48,7 @@ CREATE TABLE degrees (
   totalCreditHours NUMERIC,
   hasMinor BOOLEAN,
   PRIMARY KEY (major, degreeName)
+<<<<<<< HEAD
 );
 
 DROP TABLE IF EXISTS minors;
@@ -64,3 +65,16 @@ CREATE TABLE minors(
 
 
 
+=======
+);
+
+DROP TABLE IF EXISTS minors;
+CREATE TABLE minors(
+  minor varchar(100) PRIMARY KEY,
+  classCode VARCHAR(5),
+  reqs JSONB,
+  UpperDivisonCreds NUMERIC,
+  majorElectives NUMERIC,
+  totalCreditHours NUMERIC
+);
+>>>>>>> 75bcf41614a908b5c03738cc3bfb96db8ccb2d39
