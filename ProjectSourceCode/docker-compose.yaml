@@ -19,7 +19,7 @@ services:
 
   web:
     image: node:lts
-    user: 'node'
+    user: 'root'
     working_dir: /repository
     env_file: .env
     environment:

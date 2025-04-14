@@ -59,8 +59,3 @@ CREATE TABLE minors(
   majorElectives NUMERIC,
   totalCreditHours NUMERIC
 );
-
-
-
-
-
