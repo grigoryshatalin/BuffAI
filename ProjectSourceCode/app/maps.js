@@ -7,7 +7,7 @@ let destination = null;
 let markers = [];
 let startAutocomplete, endAutocomplete;
 
-function initMap() {
+function initMap(){
   const bounds = {
     north: 40.0145,
     south: 39.995307,
@@ -34,12 +34,8 @@ function initMap() {
     suppressMarkers: false,
   });
 
-  // Map click to set start/end and draw route
-  map.addListener("click", (e) => {
-    handleMapClick(e.latLng);
-  });
+  map.addListener("click", (e) => {handleMapClick(e.latLng);});
 
-  // Autocomplete for input fields
   startAutocomplete = new google.maps.places.Autocomplete(document.getElementById("start"));
   endAutocomplete = new google.maps.places.Autocomplete(document.getElementById("end"));
 
@@ -47,12 +43,12 @@ function initMap() {
   endAutocomplete.bindTo("bounds", map);
 }
 
-function handleMapClick(latLng) {
-  if (clickCount === 0) {
+function handleMapClick(latLng){
+  if(clickCount === 0){
     origin = latLng;
     addTempMarker(latLng, "Start");
     clickCount++;
-  } else if (clickCount === 1) {
+  }else if(clickCount === 1){
     destination = latLng;
     addTempMarker(latLng, "End");
     showRoute(origin, destination);
@@ -60,50 +56,44 @@ function handleMapClick(latLng) {
   }
 }
 
-function calculateRoute() {
+function calculateRoute(){
   const startInput = document.getElementById("start").value;
   const endInput = document.getElementById("end").value;
 
-  if (!startInput || !endInput) {
+  if(!startInput || !endInput){
     alert("Please enter both start and end places.");
     return;
   }
 
-  directionsService.route(
-    {
+  directionsService.route({
       origin: startInput,
       destination: endInput,
       travelMode: google.maps.TravelMode.WALKING,
-    },
-    (result, status) => {
-      if (status === "OK") {
+    }, (result, status) => {
+      if(status === "OK"){
         clearTempMarkers();
         directionsRenderer.setDirections(result);
-      } else {
+      }else{
         alert("Route search failed: " + status);
       }
     }
   );
 }
 
-function showRoute(start, end) {
-  directionsService.route(
-    {
+function showRoute(start, end){
+  directionsService.route({
       origin: start,
       destination: end,
       travelMode: google.maps.TravelMode.WALKING,
-    },
-    (result, status) => {
-      if (status === "OK") {
+    }, (result, status) => {
+      if(status === "OK"){
         directionsRenderer.setDirections(result);
-      } else {
-        console.error("Route calculation failed: " + status);
-      }
+      }else{console.error("Route calculation failed: " + status);}
     }
   );
 }
 
-function addTempMarker(position, title) {
+function addTempMarker(position, title){
   const marker = new google.maps.Marker({
     position: position,
     map: map,
@@ -112,7 +102,7 @@ function addTempMarker(position, title) {
   markers.push(marker);
 }
 
-function clearTempMarkers() {
+function clearTempMarkers(){
   for (let m of markers) m.setMap(null);
   markers = [];
   clickCount = 0;
