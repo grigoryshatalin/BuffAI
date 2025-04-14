@@ -1,8 +1,5 @@
 
-{{> head}}
-<body>
-    {{> nav}}
-    {{> message}}
+  
     {{!add css to make look pretty}}
     <h1>Welcome to BuffAI</h1>
     
@@ -16,14 +13,14 @@
     {{/each}}
     
     <div class="section">Credit Hours Taken: {{creditHours}}</div>
+    
+  
     <div class="section" >Weekly Schedule button 
-        
-        <button type="button" class="btn btn-secondary" type = "button" >
-        <a href = "/calendar"></a>
+        <button class="btn btn-secondary" onclick="location.href='/calendar'">
+        Click!
+   
         </button>
      </div>
     
     
     {{> footer}}
-</body>
-</html>

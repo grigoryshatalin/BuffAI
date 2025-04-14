@@ -53,6 +53,20 @@ app.get('/', (req, res) => {
     res.render('testing', { response: null }); // Pass empty response initially
 });
 
+// route to render home.hbs
+app.get('/home', (req, res) => {
+  res.render('home', { title: 'Home' });
+});
+
+// Get request for logout page
+app.get('/logout', (req, res) => {
+  res.render('logout', { title: 'logout' });
+});
+
+// Get request for calendar
+app.get('/calendar', (req, res) => {
+  res.render('calendar', { title: 'calendar' });
+});
 
 //get request for the login page just to test
 app.get('/login', (req, res) => 
