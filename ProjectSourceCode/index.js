@@ -8,6 +8,7 @@ const session = require('express-session');
 const bcrypt = require('bcryptjs');
 const axios = require('axios'); // Used to call Ollama API
 const validator = require('validator'); // run `npm install validator` if not installed
+const { FORMERR } = require('dns');
 
 // *****************************************************
 // <!-- Section 2 : Connect to DB -->
@@ -53,10 +54,47 @@ app.get('/', (req, res) => {
     res.render('testing', { response: null }); // Pass empty response initially
 });
 
+//const all_students =
+//SELECT * FROM courses WHERE course_id =  
+
+
+
+
+
+
+
+
+
+
+
+
+
 // route to render home.hbs
 app.get('/home', (req, res) => {
-  res.render('home', { title: 'Home' });
+  //queries
+  //db.any(all_students, [req.session.user.student_id])
+  //.then(courses => {
+  //  console.log(courses)
+  //  res.render('pages/courses', {
+    //  email: user.email,
+    //  courses,
+    //  action: req.query.taken ? 'delete' : 'add',
+   // });
+
+//  })
+
+  res.render('home', { title: 'Home'});
 });
+
+
+
+
+
+
+
+
+
+
 
 // Get request for logout page
 app.get('/logout', (req, res) => {
@@ -73,6 +111,7 @@ app.get('/login', (req, res) =>
 {
   res.render('login');
 });
+
 //post request
 app.post('/login', async (req, res) => {
   const { username, password } = req.body;
