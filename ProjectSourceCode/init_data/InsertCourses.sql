@@ -8976,4 +8976,5 @@ VALUES
 ('WRTG 5840', 'Independent Study-Writing & Rhetoric', 1, NULL),
 ('YIDD 1010', 'Beginning Yiddish 1', 4, NULL),
 ('YIDD 1020', 'Beginning Yiddish 2', 4, NULL),
-('YIDD 2010', 'Intermediate Yiddish 1', 4, NULL);
+('YIDD 2010', 'Intermediate Yiddish 1', 4, NULL)
+ON CONFLICT(course_id) DO NOTHING; 

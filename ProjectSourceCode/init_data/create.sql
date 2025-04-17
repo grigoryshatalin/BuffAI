@@ -1,16 +1,3 @@
-DROP TABLE IF EXISTS students;
-CREATE TABLE students (
-  student_id SERIAL PRIMARY KEY,
-  fullName VARCHAR(100),
-  email VARCHAR(200) NOT NULL,
-  year VARCHAR(15) NOT NULL,
-  major VARCHAR(30) NOT NULL,
-  degree VARCHAR(15) NOT NULL,
-  minor VARCHAR (30), 
-  password VARCHAR(255) NOT NULL,
-  FOREIGN KEY (major, degree) REFERENCES degrees(major, degreeName),
-  FOREIGN KEY (minor) REFERENCES minors(minor)
-);
 
 DROP TABLE IF EXISTS courses;
 CREATE TABLE courses (
@@ -20,12 +7,7 @@ CREATE TABLE courses (
   specific_major VARCHAR(100) NULL --only {specific_major}s can take this course 
 );
 
-DROP TABLE IF EXISTS student_courses;
-CREATE TABLE student_courses (
-  course_id VARCHAR(20) NOT NULL REFERENCES courses (course_id),
-  student_id INTEGER NOT NULL REFERENCES students (student_id)
-);
-  
+
 DROP TABLE IF EXISTS prerequisites;
 CREATE TABLE prerequisites (
   course_id VARCHAR(50) NOT NULL REFERENCES courses(course_id), 
@@ -61,6 +43,24 @@ CREATE TABLE minors(
 );
 
 
+DROP TABLE IF EXISTS students;
+CREATE TABLE students (
+  student_id SERIAL PRIMARY KEY,
+  fullName VARCHAR(100),
+  email VARCHAR(200) NOT NULL,
+  year VARCHAR(15) NOT NULL,
+  major VARCHAR(30) NOT NULL,
+  degree VARCHAR(15) NOT NULL,
+  minor VARCHAR (30), 
+  password VARCHAR(255) NOT NULL,
+  FOREIGN KEY (major, degree) REFERENCES degrees(major, degreeName),
+  FOREIGN KEY (minor) REFERENCES minors(minor)
+);
 
 
-
+DROP TABLE IF EXISTS student_courses;
+CREATE TABLE student_courses (
+  course_id VARCHAR(20) NOT NULL REFERENCES courses (course_id),
+  student_id INTEGER NOT NULL REFERENCES students (student_id)
+);
+  

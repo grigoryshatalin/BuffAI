@@ -54,6 +54,24 @@ app.get('/', (req, res) => {
     res.render('testing', { response: null }); // Pass empty response initially
 });
 
+////
+app.get('/test-degrees', async (req, res) => {
+  const { major, degree } = req.query;
+
+  try {
+    const result = await db.query(
+      'SELECT * FROM degrees WHERE major = $1 AND degreeName = $2',
+      [major, degree]
+    );
+
+    res.json(result.rows);
+  } catch (err) {
+    console.error('Query error:', err);  
+    res.status(500).send('Error testing query');
+  }
+});
+
+////
 
 //get request for the login page just to test
 app.get('/login', (req, res) => 

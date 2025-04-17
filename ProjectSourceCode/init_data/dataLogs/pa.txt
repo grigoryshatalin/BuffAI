@@ -1,0 +1,1 @@
+('Communication (Minor)', 'COMM', '["COMM 1210", ["COMM 1300", "COMM 1600"]]', 9, 3, 18),
