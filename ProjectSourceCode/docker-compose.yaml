@@ -8,20 +8,26 @@ services:
       - db-data:/var/lib/postgresql/data
       - ./init_data:/docker-entrypoint-initdb.d
     ports:
-      - '5432'
+      - "5432:5432"
 
   ollama:
-    image: ollama/ollama
-    ports:
-      - "11434:11434"
+    build:
+      context: .
+      dockerfile: ollama.Dockerfile
     volumes:
       - ollama-data:/root/.ollama
-    command: serve
+    ports:
+      - "11434:11434"
+    entrypoint: /entrypoint.sh
 
   web:
     image: node:lts
     user: 'root'
-    working_dir: /repository
+    working_dir: /app
+    volumes:
+      - ./frontend:/app
+    ports:
+      - '3000:3000'
     env_file: .env
     environment:
       - NODE_ENV=development
@@ -29,10 +35,6 @@ services:
       - db
       - ollama
       - python-api
-    ports:
-      - '3000:3000'
-    volumes:
-      - ./:/repository
     command: sh -c "npm install && npm run start"
 
   python-api:

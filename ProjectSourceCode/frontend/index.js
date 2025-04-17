@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const app = express();
 const handlebars = require('express-handlebars');
@@ -58,17 +59,6 @@ app.get('/', (req, res) => {
 //SELECT * FROM courses WHERE course_id =  
 
 
-
-
-
-
-
-
-
-
-
-
-
 // route to render home.hbs
 app.get('/home', (req, res) => {
   //queries
@@ -85,16 +75,6 @@ app.get('/home', (req, res) => {
 
   res.render('home', { title: 'Home'});
 });
-
-
-
-
-
-
-
-
-
-
 
 // Get request for logout page
 app.get('/logout', (req, res) => {
@@ -148,59 +128,78 @@ app.get('/register', (req, res) =>
 });
 
 // Route to handle registration form submission (POST request)
-
 app.post('/register', async (req, res) => {
-  const {
-    first_name,
-    last_name,
+  const{
+    student_id,
+    fullName,
     email,
     password,
     year,
     major,
-    degree
+    degree,
+    minor
   } = req.body;
 
-  // ✅ Simple validation logic
-  if (
-    !first_name ||
-    !last_name ||
+  if(
+    !student_id ||
+    !fullName ||
     !email ||
     !validator.isEmail(email) ||
     !password ||
-    password.length < 6 || // minimum length check (you can change this)
+    password.length < 6 ||
     !year ||
     !major ||
     !degree
-  ) {
-    return res.status(400).json({ message: 'Invalid input' });
+  ){
+    return res.status(400).render('register', {error: 'Please fill out all required fields correctly.'});
   }
 
-  try {
+  try{
+    const validDegree = await db.oneOrNone(
+      'SELECT 1 FROM degrees WHERE major = $1 AND degreeName = $2',
+      [major, degree]
+    );if(!validDegree){
+      return res.status(400).render('register', {
+        error: 'Selected degree does not exist for this major.'
+      });
+    }if(minor){
+      const validMinor = await db.oneOrNone(
+        'SELECT 1 FROM minors WHERE minor = $1',
+        [minor]
+      );if (!validMinor) {
+        return res.status(400).render('register', {
+          error: 'Selected minor does not exist.'
+        });
+      }
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
     await db.none(
       `INSERT INTO students (
-        first_name, last_name, email, password, year, major, degree
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7)`,
-      [first_name, last_name, email, password, year, major, degree]
-    );
-
-    res.redirect('/login');
-  } catch (error) {
-    console.error("Error during registration:", error);
-    res.status(500).json({ message: 'Server error. Please try again.' });
+        student_id, fullName, email, year, major, degree, minor, password
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+      [student_id, fullName, email, year, major, degree, minor || null, hashedPassword]
+    );res.redirect('/login');
+  }catch(error){
+    console.error("Registration error:", error);
+    res.status(500).render('register', {
+      error: 'Something went wrong. Please try again.'
+    });
   }
 });
-
-
 
 // Route to interact with Ollama
 let chatHistory = []; // per session — in-memory (could be user/session based)
 
 app.use(express.json());
 
-// index.js
+// ollama
 app.post('/stream', async (req, res) => {
   const { prompt } = req.body;
-  chatHistory.push({ role: 'user', content: prompt });
+  const chatHistory = [
+    { role: 'system', content: 'You are a helpful assistant.' },
+    { role: 'user', content: prompt }
+  ];
 
   res.setHeader('Content-Type', 'text/event-stream');
   res.setHeader('Cache-Control', 'no-cache');
@@ -212,7 +211,7 @@ app.post('/stream', async (req, res) => {
       url: 'http://ollama:11434/api/chat',
       responseType: 'stream',
       data: {
-        model: 'gemma3:1b',
+        model: 'gemma',
         messages: chatHistory,
         stream: true
       }
@@ -227,18 +226,18 @@ app.post('/stream', async (req, res) => {
           const parsed = JSON.parse(line);
           const text = parsed.message?.content || parsed.response || '';
           assistantReply += text;
-          res.write(text); // no `data:`, just raw text
-        } catch (e) {
-          console.error('JSON parse error:', e);
+          res.write(text);
+        } catch (err) {
+          console.error('JSON parse error:', err);
         }
       }
     });
 
     ollamaRes.data.on('end', () => {
-      chatHistory.push({ role: 'assistant', content: assistantReply });
       res.end();
     });
   } catch (err) {
+    console.error('Ollama error:', err.message);
     res.write(`ERROR: ${err.message}`);
     res.end();
   }
@@ -246,6 +245,14 @@ app.post('/stream', async (req, res) => {
 
 //Route to interact with Rate My Professor
 app.use("/app", express.static(__dirname + "/app"));
+
+//Maps route
+const fs = require('fs');
+app.get('/map', (req, res) => {
+  const mapScript = fs.readFileSync(path.join(__dirname, 'public', 'map.js'), 'utf-8');
+  res.render('map', { title: 'Campus Map', mapScript });
+});
+
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
