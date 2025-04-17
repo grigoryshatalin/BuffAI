@@ -59,22 +59,17 @@ app.get('/', (req, res) => {
 //SELECT * FROM courses WHERE course_id =  
 
 
-// route to render home.hbs
-app.get('/home', (req, res) => {
-  //queries
-  //db.any(all_students, [req.session.user.student_id])
-  //.then(courses => {
-  //  console.log(courses)
-  //  res.render('pages/courses', {
-    //  email: user.email,
-    //  courses,
-    //  action: req.query.taken ? 'delete' : 'add',
-   // });
 
-//  })
 
-  res.render('home', { title: 'Home'});
-});
+
+
+
+
+
+
+
+
+
 
 // Get request for logout page
 app.get('/logout', (req, res) => {
@@ -115,6 +110,33 @@ app.post('/login', async (req, res) => {
       res.render('login', { error: 'Something went wrong. Please try again.' });
   }
 });
+
+
+
+//route to render home.hbs
+// app.get('/home', (req, res) => {
+//   //queries
+//   const all_students = 'SELECT * FROM students WHERE student_id = $1'; 
+//   const student_courses = 'SELECT * FROM courses WHERE specific_major = students.major'; 
+//   db.any(all_students, [req.session.user.student_id]);
+//   db.any(student_courses, [req.session.user.student_id])
+//     .then(courses => {
+//       console.log(courses)
+//       res.render('pages/home', {
+//         email: user.email,
+//          courses,
+//     });
+//    })
+// });
+
+
+app.get('/home', (req, res) => 
+  {
+    res.render('home');
+  });
+
+
+
 
 //testing
 app.get('/welcome', (req, res) => {
