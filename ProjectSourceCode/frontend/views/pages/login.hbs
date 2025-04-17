@@ -10,8 +10,9 @@
 
   <style>
     body {
-      background-color: #424242;
+      background-color: #fff;
       font-family: 'Poppins', sans-serif;
+      
     }
 
     .title {
@@ -76,7 +77,15 @@
     }
 
     .text {
-      color: #000;
+      color: gold;
+    }
+
+    .bottom-left-img {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 400px;
+      z-index: 10;
     }
   </style>
 </head>
@@ -101,13 +110,14 @@
 
             <button type="submit" class="btn btn-custom w-100">Login</button>
           </form>
-          <p class="text-center mt-3 text">Don't have an account? <a href="/register">Register here!</a></p>
+          <p class="form-label">Don't have an account? <a href="/register">Register here!</a></p>
         </div>
       </div>
     </div>
   </div>
+  <img src="https://www.colorado.edu/coloradan/sites/default/files/styles/large_image_style/public/article-image/chip_on_campus5_0.jpg?itok=TKFuWcu2" alt="ChipCharacter" class="bottom-left-img" />
 
-  <!-- Bootstrap JS -->
+  
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
