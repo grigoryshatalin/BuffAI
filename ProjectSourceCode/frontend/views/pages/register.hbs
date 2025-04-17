@@ -109,11 +109,11 @@
 
 <body>
   <div class="container mt-5">
-    <h1 class="title">Student Registration</h1>
-    <form>
+    <h1 class="mb-4">BuffAI Student Registration</h1>
+    <form action="/register" method="POST">
       <div class="mb-3">
-        <label for="studentId" class="form-label">Student ID</label>
-        <input type="text" id="studentId" name="studentId" class="form-control" required>
+        <label for="student_id" class="form-label">Student ID</label>
+        <input type="text" id="student_id" name="student_id" class="form-control" required>
       </div>
 
       <div class="mb-3">
@@ -130,26 +130,28 @@
         <label for="password" class="form-label">Password</label>
         <input type="password" id="password" name="password" class="form-control" required>
       </div>
+
+      <div class="mb-3">
+        <label for="year" class="form-label">Year</label>
+        <select id="year" name="year" class="form-select" required>
+          <option value="">Select year</option>
+          <option value="Freshman">Freshman</option>
+          <option value="Sophomore">Sophomore</option>
+          <option value="Junior">Junior</option>
+          <option value="Senior">Senior</option>
+          <option value="Graduate">Graduate</option>
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label for="degree" class="form-label">Degree</label>
+        <select id="degree" name="degree" class="form-select" required>
+          <option value="">Select degree</option>
+          <option value="BA">BA</option>
+          <option value="BS">BS</option>
+        </select>
+      </div>
       
-    <div class="mb-3">
-    <label for="degree" class="form-label">Degree Type</label>
-    <select id="degree" name="degree" class="form-select" required>
-        <option value="Bachelor's of Science">Bachelor's of Science</option>
-        <option value="Bachelor's of Arts">Bachelor's of Arts</option>
-    </select>
-</div>
-
-    <div class="mb-3">
-    <label for="year" class="form-label">Year</label>
-    <select id="year" name="year" class="form-select" required>
-        <option value="Freshman">Freshman</option>
-        <option value="Sophomore">Sophomore</option>
-        <option value="Junior">Junior</option>
-        <option value="Senior">Senior</option>
-    </select>
-</div>
-
-
       <div class="mb-3">
         <label for="major" class="form-label">Major</label>
         <select id="major" name="major" class="form-select" required>
@@ -325,5 +327,4 @@
 
 
 </body>
-<script src="../../app/register.js" defer></script>
 </html>
