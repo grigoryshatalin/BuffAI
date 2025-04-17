@@ -141,9 +141,15 @@ app.post('/register', async (req, res) => {
 
 
 // Route to interact with Ollama
+let chatHistory = []; // per session — in-memory (could be user/session based)
 
-app.get('/stream', async (req, res) => {
-  const prompt = req.query.prompt;
+app.use(express.json());
+
+// index.js
+app.post('/stream', async (req, res) => {
+  const { prompt } = req.body;
+  chatHistory.push({ role: 'user', content: prompt });
+
   res.setHeader('Content-Type', 'text/event-stream');
   res.setHeader('Cache-Control', 'no-cache');
   res.setHeader('Connection', 'keep-alive');
@@ -155,10 +161,12 @@ app.get('/stream', async (req, res) => {
       responseType: 'stream',
       data: {
         model: 'gemma3:1b',
-        messages: [{ role: 'user', content: prompt }],
+        messages: chatHistory,
         stream: true
       }
     });
+
+    let assistantReply = '';
 
     ollamaRes.data.on('data', chunk => {
       const lines = chunk.toString().split('\n').filter(Boolean);
@@ -166,17 +174,20 @@ app.get('/stream', async (req, res) => {
         try {
           const parsed = JSON.parse(line);
           const text = parsed.message?.content || parsed.response || '';
-          res.write(`data: ${text}\n\n`);
+          assistantReply += text;
+          res.write(text); // no `data:`, just raw text
         } catch (e) {
-          console.error('Stream parse error:', e);
+          console.error('JSON parse error:', e);
         }
       }
     });
 
-    ollamaRes.data.on('end', () => res.end());
+    ollamaRes.data.on('end', () => {
+      chatHistory.push({ role: 'assistant', content: assistantReply });
+      res.end();
+    });
   } catch (err) {
-    console.error('Streaming error:', err.message);
-    res.write(`data: ERROR: ${err.message}\n\n`);
+    res.write(`ERROR: ${err.message}`);
     res.end();
   }
 });
