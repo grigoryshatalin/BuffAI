@@ -2,46 +2,117 @@
   .terminal-container {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
     height: 100vh;
     background-color: #1e1e1e;
     color: white;
     font-family: monospace;
+    padding: 1em;
   }
+
+  #output {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1em;
+    white-space: pre-wrap;
+    border: 1px solid #444;
+    margin-bottom: 1em;
+  }
+
+  .chat-bubble {
+    margin-bottom: 1em;
+    padding: 0.5em;
+  }
+
+  .user {
+    text-align: right;
+    color: #80dfff;
+  }
+
+  .assistant {
+    text-align: left;
+    color: #c0ffc0;
+  }
+
   .input-box {
-    border: none;
-    background: none;
+    width: 100%;
+    background: #2d2d2d;
     color: white;
     font-size: 18px;
-    width: 300px;
-    outline: none;
+    padding: 0.5em;
+    border: none;
   }
-  .blinking-cursor {
-    display: inline-block;
-    width: 10px;
-    height: 20px;
-    background-color: dimgray;
-    animation: blink 1s infinite;
+
+  button {
+    background: #3a3a3a;
+    color: white;
+    border: none;
+    padding: 0.4em 1em;
+    margin-top: 0.5em;
   }
-  @keyframes blink {
-    0% { opacity: 1; }
-    50% { opacity: 0; }
-    100% { opacity: 1; }
+
+  button:hover {
+    background-color: #4f4f4f;
   }
 </style>
 
 <div class="terminal-container">
-  <span>Enter Command:</span>
-  <form action="/generate" method="POST">
-  <input name="prompt" class="input-box" type="text" required autofocus>
-  <button type="submit">Submit</button>
-</form>
-
-
-  {{#if response}}
-    <pre>Response: {{response}}</pre>
-  {{/if}}
+  <div id="output"></div>
+  <form id="chat-form">
+    <input name="prompt" class="input-box" type="text" required placeholder="Type your message..." autocomplete="off">
+    <button type="submit">Send</button>
+  </form>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script>
+  const chatForm = document.getElementById('chat-form');
+  const output = document.getElementById('output');
+
+  chatForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const input = chatForm.prompt;
+    const prompt = input.value.trim();
+    if (!prompt) return;
+
+    // Show user message
+    appendMessage('user', prompt);
+    input.value = '';
+    input.disabled = true;
+
+    // Add assistant placeholder
+    const bubble = appendMessage('assistant', '');
+    let buffer = '';
+
+    const res = await fetch('/stream', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt })
+    });
+
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      const chunk = decoder.decode(value, { stream: true });
+      buffer += chunk;
+      bubble.innerHTML = marked.parse(buffer);
+      output.scrollTop = output.scrollHeight;
+    }
+
+    input.disabled = false;
+    input.focus();
+  });
+
+  function appendMessage(role, content) {
+    const bubble = document.createElement('div');
+    bubble.classList.add('chat-bubble', role);
+    bubble.innerHTML = role === 'assistant' ? '' : marked.parseInline(content);
+    output.appendChild(bubble);
+    output.scrollTop = output.scrollHeight;
+    return bubble;
+  }
+</script>
 
 {{> footer}}

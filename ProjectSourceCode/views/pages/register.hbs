@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>BuffAI Registration</title>
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BuffAI Registration Form</title>
+ 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-
-  <style>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  
+    <style>
     body {
       background-color: #424242;
       font-family: 'Poppins', sans-serif;
@@ -25,7 +25,7 @@
     .card {
       margin-top: 30px;
       border-radius: 12px;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
     }
 
     .form-label {
@@ -61,78 +61,182 @@
     }
   </style>
 </head>
+
 <body>
-  <div class="container">
-    <div class="title">Welcome to BuffAI!</div>
-    <div class="row justify-content-center">
-      <div class="col-md-6">
-        <div class="card p-4">
-          <h4 class="text-center form-title mb-4">Student Registration</h4>
-          <form action="/register" method="POST">
-            <div class="mb-3">
-              <label for="first_name" class="form-label">First Name</label>
-              <input type="text" id="first_name" name="first_name" class="form-control" required>
-            </div>
-
-            <div class="mb-3">
-              <label for="last_name" class="form-label">Last Name</label>
-              <input type="text" id="last_name" name="last_name" class="form-control" required>
-            </div>
-
-            <div class="mb-3">
-              <label for="email" class="form-label">Email</label>
-              <input type="email" id="email" name="email" class="form-control" required>
-            </div>
-
-            <div class="mb-3">
-              <label for="year" class="form-label">Year</label>
-              <select id="year" name="year" class="form-select" required>
-                <option value="">Select Year</option>
-                <option value="Freshman">Freshman</option>
-                <option value="Sophomore">Sophomore</option>
-                <option value="Junior">Junior</option>
-                <option value="Senior">Senior</option>
-              </select>
-            </div>
-
-            <div class="mb-3">
-              <label for="major" class="form-label">Major</label>
-              <select id="major" name="major" class="form-select" required>
-                <option value="Computer Science">Computer Science</option>
-                <option value="Applied Math">Applied Math</option>
-                <option value="Biochemistry">Biochemistry</option>
-                <!-- Add more majors -->
-              </select>
-            </div>
-
-            <div class="mb-3">
-              <label for="minor" class="form-label">Minor</label>
-              <select id="minor" name="minor" class="form-select" required>
-                <option value="Art History (Minor)">Art History (Minor)</option>
-                <option value="Applied Mathematics (Minor)">Applied Mathematics (Minor)</option>
-                <!-- Add more minors -->
-              </select>
-            </div>
-
-            <div class="mb-3">
-              <label for="degree" class="form-label">Degree</label>
-              <select id="degree" name="degree" class="form-select" required>
-                <option value="BA">BA</option>
-                <option value="BS">BS</option>
-                <option value="BFA">BFA</option>
-                <option value="Certificate">Certificate</option>
-              </select>
-            </div>
-
-            <button type="submit" class="btn btn-custom w-100">Register</button>
-          </form>
-          <p class="text-center mt-3">Already have an account? <a href="/login">Login here</a></p>
-        </div>
+  <div class="container mt-5">
+    <h1 class="mb-4">BuffAI Student Registration</h1>
+    <form>
+      <div class="mb-3">
+        <label for="studentId" class="form-label">Student ID</label>
+        <input type="text" id="studentId" name="studentId" class="form-control" required>
       </div>
-    </div>
-  </div>
 
-  <!-- Bootstrap JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+      <div class="mb-3">
+        <label for="fullName" class="form-label">Full Name</label>
+        <input type="text" id="fullName" name="fullName" class="form-control" required>
+      </div>
+
+      <div class="mb-3">
+        <label for="email" class="form-label">Email</label>
+        <input type="email" id="email" name="email" class="form-control" required>
+      </div>
+
+      <div class="mb-3">
+        <label for="password" class="form-label">Password</label>
+        <input type="password" id="password" name="password" class="form-control" required>
+      </div>
+      
+      <div class="mb-3">
+        <label for="major" class="form-label">Major</label>
+        <select id="major" name="major" class="form-select" required>
+          <option value="Anthropology">Anthropology</option>
+          <option value="Applied Mathematics">Applied Mathematics</option>
+          <option value="Architectural Engineering">Architectural Engineering</option>
+          <option value="Art History">Art History</option>
+          <option value="Art Practices">Art Practices</option>
+          <option value="Astrophysical and Planetary Sciences">Astrophysical and Planetary Sciences</option>
+          <option value="Atmospheric and Oceanic Sciences">Atmospheric and Oceanic Sciences</option>
+          <option value="Biochemistry">Biochemistry</option>
+          <option value="Biomedical Engineering">Biomedical Engineering</option>
+          <option value="Business">Business</option>
+          <option value="Chemical and Biological Engineering">Chemical and Biological Engineering</option>
+          <option value="Chemistry">Chemistry</option>
+          <option value="Civil Engineering">Civil Engineering</option>
+          <option value="Classics">Classics</option>
+          <option value="Communication">Communication</option>
+          <option value="Computer Engineering">Computer Engineering</option>
+          <option value="Computer Science">Computer Science</option>
+          <option value="Creative Technology and Design">Creative Technology and Design</option>
+          <option value="Dance">Dance</option>
+          <option value="Data Science">Data Science</option>
+          <option value="Ecology and Evolutionary Biology">Ecology and Evolutionary Biology</option>
+          <option value="Economics">Economics</option>
+          <option value="Electrical Engineering">Electrical Engineering</option>
+          <option value="Engineering Plus">Engineering Plus</option>
+          <option value="English">English</option>
+          <option value="Environmental Engineering">Environmental Engineering</option>
+          <option value="Environmental Studies">Environmental Studies</option>
+          <option value="Ethnic Studies">Ethnic Studies</option>
+          <option value="Film Studies">Film Studies</option>
+          <option value="Geography">Geography</option>
+          <option value="Geology">Geology</option>
+          <option value="German Studies">German Studies</option>
+          <option value="History">History</option>
+          <option value="Information Science">Information Science</option>
+          <option value="Integrative Physiology">Integrative Physiology</option>
+          <option value="International Affairs">International Affairs</option>
+          <option value="Journalism">Journalism</option>
+          <option value="Linguistics">Linguistics</option>
+          <option value="Mathematics">Mathematics</option>
+          <option value="Mechanical Engineering">Mechanical Engineering</option>
+          <option value="Media Production">Media Production</option>
+          <option value="Media Studies">Media Studies</option>
+          <option value="Molecular, Cellular and Developmental Biology">Molecular, Cellular and Developmental Biology</option>
+          <option value="Music">Music</option>
+          <option value="Neuroscience">Neuroscience</option>
+          <option value="Philosophy">Philosophy</option>
+          <option value="Physics">Physics</option>
+          <option value="Political Science">Political Science</option>
+          <option value="Psychology">Psychology</option>
+          <option value="Sociology">Sociology</option>
+          <option value="Spanish and Portuguese">Spanish and Portuguese</option>
+          <option value="Speech, Language and Hearing Sciences">Speech, Language and Hearing Sciences</option>
+          <option value="Strategic Communication">Strategic Communication</option>
+          <option value="Studio Arts">Studio Arts</option>
+          <option value="Theatre">Theatre</option>
+          <option value="Women and Gender Studies">Women and Gender Studies</option>
+          <option value="Writing and Rhetoric">Writing and Rhetoric</option>
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label for="minor" class="form-label">Minor</label>
+        <select id="minor" name="minor" class="form-select">
+          <option value="">None</option>
+          <option value="Anthropology (Minor)">Anthropology (Minor)</option>
+          <option value="Applied Mathematics (Minor)">Applied Mathematics (Minor)</option>
+          <option value="Arabic (Minor)">Arabic (Minor)</option>
+          <option value="Architectural Engineering (Minor)">Architectural Engineering (Minor)</option>
+          <option value="Art History (Minor)">Art History (Minor)</option>
+          <option value="Art Practices (Minor)">Art Practices (Minor)</option>
+          <option value="Asian Studies (Minor)">Asian Studies (Minor)</option>
+          <option value="Astrophysical and Planetary Sciences (Minor)">Astrophysical and Planetary Sciences (Minor)</option>
+          <option value="Atmospheric and Oceanic Sciences (Minor)">Atmospheric and Oceanic Sciences (Minor)</option>
+          <option value="Biochemistry (Minor)">Biochemistry (Minor)</option>
+          <option value="Biomedical Engineering (Minor)">Biomedical Engineering (Minor)</option>
+          <option value="Business (Minor)">Business (Minor)</option>
+          <option value="Chemistry (Minor)">Chemistry (Minor)</option>
+          <option value="Chinese (Minor)">Chinese (Minor)</option>
+          <option value="Cinema Studies (Minor)">Cinema Studies (Minor)</option>
+          <option value="Civil Engineering (Minor)">Civil Engineering (Minor)</option>
+          <option value="Classics (Minor)">Classics (Minor)</option>
+          <option value="Communication (Minor)">Communication (Minor)</option>
+          <option value="Computational Biology (Minor)">Computational Biology (Minor)</option>
+          <option value="Computer Engineering (Minor)">Computer Engineering (Minor)</option>
+          <option value="Computer Science (Minor)">Computer Science (Minor)</option>
+          <option value="Creative Technology and Design (Minor)">Creative Technology and Design (Minor)</option>
+          <option value="Creative Writing (Minor)">Creative Writing (Minor)</option>
+          <option value="Dance (Minor)">Dance (Minor)</option>
+          <option value="Data Science (Minor)">Data Science (Minor)</option>
+          <option value="Ecology and Evolutionary Biology (Minor)">Ecology and Evolutionary Biology (Minor)</option>
+          <option value="Economics (Minor)">Economics (Minor)</option>
+          <option value="Education (Minor)">Education (Minor)</option>
+          <option value="Electrical Engineering (Minor)">Electrical Engineering (Minor)</option>
+          <option value="Energy Engineering (Minor)">Energy Engineering (Minor)</option>
+          <option value="Engineering Entrepreneurship (Minor)">Engineering Entrepreneurship (Minor)</option>
+          <option value="Engineering Management (Minor)">Engineering Management (Minor)</option>
+          <option value="English (Minor)">English (Minor)</option>
+          <option value="Environmental Planning (Minor)">Environmental Planning (Minor)</option>
+          <option value="Ethnic Studies (Minor)">Ethnic Studies (Minor)</option>
+          <option value="French (Minor)">French (Minor)</option>
+          <option value="Geography (Minor)">Geography (Minor)</option>
+          <option value="Geology (Minor)">Geology (Minor)</option>
+          <option value="German Studies (Minor)">German Studies (Minor)</option>
+          <option value="Global Engineering (Minor)">Global Engineering (Minor)</option>
+          <option value="Hebrew and Israel Studies (Minor)">Hebrew and Israel Studies (Minor)</option>
+          <option value="Hindi/Urdu (Minor)">Hindi/Urdu (Minor)</option>
+          <option value="History (Minor)">History (Minor)</option>
+          <option value="Humanities (Minor)">Humanities (Minor)</option>
+          <option value="Information Science (Minor)">Information Science (Minor)</option>
+          <option value="International Affairs (Minor)">International Affairs (Minor)</option>
+          <option value="Italian (Minor)">Italian (Minor)</option>
+          <option value="Japanese (Minor)">Japanese (Minor)</option>
+          <option value="Jewish Studies (Minor)">Jewish Studies (Minor)</option>
+          <option value="Journalism (Minor)">Journalism (Minor)</option>
+          <option value="Korean (Minor)">Korean (Minor)</option>
+          <option value="Leadership Studies (Minor)">Leadership Studies (Minor)</option>
+          <option value="Linguistics (Minor)">Linguistics (Minor)</option>
+          <option value="Materials Science & Engineering (Minor)">Materials Science & Engineering (Minor)</option>
+          <option value="Mathematics (Minor)">Mathematics (Minor)</option>
+          <option value="Media Production (Minor)">Media Production (Minor)</option>
+          <option value="Media Studies (Minor)">Media Studies (Minor)</option>
+          <option value="Molecular, Cellular and Developmental Biology (Minor)">Molecular, Cellular and Developmental Biology (Minor)</option>
+          <option value="Music (Minor)">Music (Minor)</option>
+          <option value="Nordic Studies (Minor)">Nordic Studies (Minor)</option>
+          <option value="Philosophy (Minor)">Philosophy (Minor)</option>
+          <option value="Physics (Minor)">Physics (Minor)</option>
+          <option value="Political Science (Minor)">Political Science (Minor)</option>
+          <option value="Portuguese (Minor)">Portuguese (Minor)</option>
+          <option value="Quantum Engineering (Minor)">Quantum Engineering (Minor)</option>
+          <option value="Religious Studies (Minor)">Religious Studies (Minor)</option>
+          <option value="Russian, East European and Eurasian Studies (Minor)">Russian, East European and Eurasian Studies (Minor)</option>
+          <option value="Signals and Systems (Minor)">Signals and Systems (Minor)</option>
+          <option value="Sociology (Minor)">Sociology (Minor)</option>
+          <option value="Space (Minor)">Space (Minor)</option>
+          <option value="Spanish (Minor)">Spanish (Minor)</option>
+          <option value="Speech, Language and Hearing Sciences (Minor)">Speech, Language and Hearing Sciences (Minor)</option>
+          <option value="Sports Media (Minor)">Sports Media (Minor)</option>
+          <option value="Statistics (Minor)">Statistics (Minor)</option>
+          <option value="Teaching English to Speakers of Other Languages (Minor)">Teaching English to Speakers of Other Languages (Minor)</option>
+          <option value="Theatre (Minor)">Theatre (Minor)</option>
+          <option value="Women and Gender Studies (Minor)">Women and Gender Studies (Minor)</option>
+          <option value="Writing and Public Engagement (Minor)">Writing and Public Engagement (Minor)</option>
+        </select>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+  </div>
 </body>
+<script src="../../app/register.js" defer></script>
 </html>

@@ -8,7 +8,7 @@ const session = require('express-session');
 const bcrypt = require('bcryptjs');
 const axios = require('axios'); // Used to call Ollama API
 const validator = require('validator'); // run `npm install validator` if not installed
-const { FORMERR } = require('dns');
+const { Readable } = require('stream');
 
 // *****************************************************
 // <!-- Section 2 : Connect to DB -->
@@ -193,33 +193,60 @@ app.post('/register', async (req, res) => {
 
 
 // Route to interact with Ollama
-app.post('/generate', async (req, res) => {
+let chatHistory = []; // per session — in-memory (could be user/session based)
+
+app.use(express.json());
+
+// index.js
+app.post('/stream', async (req, res) => {
   const { prompt } = req.body;
+  chatHistory.push({ role: 'user', content: prompt });
+
+  res.setHeader('Content-Type', 'text/event-stream');
+  res.setHeader('Cache-Control', 'no-cache');
+  res.setHeader('Connection', 'keep-alive');
 
   try {
-    const response = await axios.post('http://ollama:11434/api/chat', {
-      model: 'gemma3:1b',
-      messages: [
-        { role: 'user', content: prompt }
-      ],
-      stream: true
+    const ollamaRes = await axios({
+      method: 'post',
+      url: 'http://ollama:11434/api/chat',
+      responseType: 'stream',
+      data: {
+        model: 'gemma3:1b',
+        messages: chatHistory,
+        stream: true
+      }
     });
 
-    const responseContent = response.data.message?.content || 'No response received';
-    res.json({ response: responseContent });
-  } catch (error) {
-    console.error('Error communicating with Ollama:', error.message);
-    
-    if (error.response) {
-      console.error('Error details:', {
-        status: error.response.status,
-        data: error.response.data
-      });
-    }
-    
-    res.status(500).json({ error: 'Failed to communicate with Ollama', details: error.message });
+    let assistantReply = '';
+
+    ollamaRes.data.on('data', chunk => {
+      const lines = chunk.toString().split('\n').filter(Boolean);
+      for (const line of lines) {
+        try {
+          const parsed = JSON.parse(line);
+          const text = parsed.message?.content || parsed.response || '';
+          assistantReply += text;
+          res.write(text); // no `data:`, just raw text
+        } catch (e) {
+          console.error('JSON parse error:', e);
+        }
+      }
+    });
+
+    ollamaRes.data.on('end', () => {
+      chatHistory.push({ role: 'assistant', content: assistantReply });
+      res.end();
+    });
+  } catch (err) {
+    res.write(`ERROR: ${err.message}`);
+    res.end();
   }
 });
+
+//Route to interact with Rate My Professor
+app.use("/app", express.static(__dirname + "/app"));
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);

@@ -1,0 +1,8 @@
+{
+  "name": "rmp-scraper",
+  "type": "module",
+  "main": "index.js",
+  "dependencies": {
+    "puppeteer": "^21.3.8"
+  }
+}
