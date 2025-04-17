@@ -54,8 +54,7 @@ app.get('/', (req, res) => {
     res.render('testing', { response: null }); // Pass empty response initially
 });
 
-//const all_students =
-//SELECT * FROM courses WHERE course_id =  
+  
 
 
 
@@ -69,22 +68,7 @@ app.get('/', (req, res) => {
 
 
 
-// route to render home.hbs
-app.get('/home', (req, res) => {
-  //queries
-  //db.any(all_students, [req.session.user.student_id])
-  //.then(courses => {
-  //  console.log(courses)
-  //  res.render('pages/courses', {
-    //  email: user.email,
-    //  courses,
-    //  action: req.query.taken ? 'delete' : 'add',
-   // });
 
-//  })
-
-  res.render('home', { title: 'Home'});
-});
 
 
 
@@ -136,6 +120,33 @@ app.post('/login', async (req, res) => {
   }
 });
 
+
+
+//route to render home.hbs
+// app.get('/home', (req, res) => {
+//   //queries
+//   const all_students = 'SELECT * FROM students WHERE student_id = $1'; 
+//   const student_courses = 'SELECT * FROM courses WHERE specific_major = students.major'; 
+//   db.any(all_students, [req.session.user.student_id]);
+//   db.any(student_courses, [req.session.user.student_id])
+//     .then(courses => {
+//       console.log(courses)
+//       res.render('pages/home', {
+//         email: user.email,
+//          courses,
+//     });
+//    })
+// });
+
+
+app.get('/home', (req, res) => 
+  {
+    res.render('home');
+  });
+
+
+
+
 //testing
 app.get('/welcome', (req, res) => {
   res.json({status: 'success', message: 'Welcome!'});
@@ -151,13 +162,14 @@ app.get('/register', (req, res) =>
 
 app.post('/register', async (req, res) => {
   const {
-    first_name,
-    last_name,
+    student_id,
+    fullName,
     email,
     password,
     year,
     major,
-    degree
+    degree,
+    minor
   } = req.body;
 
   // ✅ Simple validation logic
@@ -170,17 +182,18 @@ app.post('/register', async (req, res) => {
     password.length < 6 || // minimum length check (you can change this)
     !year ||
     !major ||
-    !degree
+    !degree ||
+    !minor
   ) {
     return res.status(400).json({ message: 'Invalid input' });
   }
 
   try {
-    await db.none(
+    await db.any(
       `INSERT INTO students (
-        first_name, last_name, email, password, year, major, degree
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7)`,
-      [first_name, last_name, email, password, year, major, degree]
+        student_id, fullName, email, password, year, major, degree, minor
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+      [student_id, fullName, email, password, year, major, degree, minor]
     );
 
     res.redirect('/login');
