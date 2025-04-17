@@ -55,8 +55,18 @@ app.get('/', (req, res) => {
     res.render('testing', { response: null }); // Pass empty response initially
 });
 
-//const all_students =
-//SELECT * FROM courses WHERE course_id =  
+  
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -151,7 +161,7 @@ app.get('/register', (req, res) =>
 
 // Route to handle registration form submission (POST request)
 app.post('/register', async (req, res) => {
-  const{
+  const {
     student_id,
     fullName,
     email,
