@@ -54,12 +54,64 @@ app.get('/', (req, res) => {
     res.render('testing', { response: null }); // Pass empty response initially
 });
 
+//const all_students =
+//SELECT * FROM courses WHERE course_id =  
+
+
+
+
+
+
+
+
+
+
+
+
+
+// route to render home.hbs
+app.get('/home', (req, res) => {
+  //queries
+  //db.any(all_students, [req.session.user.student_id])
+  //.then(courses => {
+  //  console.log(courses)
+  //  res.render('pages/courses', {
+    //  email: user.email,
+    //  courses,
+    //  action: req.query.taken ? 'delete' : 'add',
+   // });
+
+//  })
+
+  res.render('home', { title: 'Home'});
+});
+
+
+
+
+
+
+
+
+
+
+
+// Get request for logout page
+app.get('/logout', (req, res) => {
+  res.render('logout', { title: 'logout' });
+});
+
+// Get request for calendar
+app.get('/calendar', (req, res) => {
+  res.render('calendar', { title: 'calendar' });
+});
 
 //get request for the login page just to test
 app.get('/login', (req, res) => 
 {
   res.render('login');
 });
+
 //post request
 app.post('/login', async (req, res) => {
   const { username, password } = req.body;
@@ -196,12 +248,6 @@ app.post('/stream', async (req, res) => {
 app.use("/app", express.static(__dirname + "/app"));
 
 const PORT = process.env.PORT || 3000;
-module.exports = app.listen(3000);
-console.log(`Server running on http://localhost:${PORT}`);
-// Start the server
-// const PORT = process.env.PORT || 3000;
-// app.listen(PORT, () => {
-//     console.log(`Server running on http://localhost:${PORT}`);
-// });
-
-
+app.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
+});
