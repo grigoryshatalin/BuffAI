@@ -54,12 +54,64 @@ app.get('/', (req, res) => {
     res.render('testing', { response: null }); // Pass empty response initially
 });
 
+//const all_students =
+//SELECT * FROM courses WHERE course_id =  
+
+
+
+
+
+
+
+
+
+
+
+
+
+// route to render home.hbs
+app.get('/home', (req, res) => {
+  //queries
+  //db.any(all_students, [req.session.user.student_id])
+  //.then(courses => {
+  //  console.log(courses)
+  //  res.render('pages/courses', {
+    //  email: user.email,
+    //  courses,
+    //  action: req.query.taken ? 'delete' : 'add',
+   // });
+
+//  })
+
+  res.render('home', { title: 'Home'});
+});
+
+
+
+
+
+
+
+
+
+
+
+// Get request for logout page
+app.get('/logout', (req, res) => {
+  res.render('logout', { title: 'logout' });
+});
+
+// Get request for calendar
+app.get('/calendar', (req, res) => {
+  res.render('calendar', { title: 'calendar' });
+});
 
 //get request for the login page just to test
 app.get('/login', (req, res) => 
 {
   res.render('login');
 });
+
 //post request
 app.post('/login', async (req, res) => {
   const { username, password } = req.body;
@@ -141,9 +193,15 @@ app.post('/register', async (req, res) => {
 
 
 // Route to interact with Ollama
+let chatHistory = []; // per session — in-memory (could be user/session based)
 
-app.get('/stream', async (req, res) => {
-  const prompt = req.query.prompt;
+app.use(express.json());
+
+// index.js
+app.post('/stream', async (req, res) => {
+  const { prompt } = req.body;
+  chatHistory.push({ role: 'user', content: prompt });
+
   res.setHeader('Content-Type', 'text/event-stream');
   res.setHeader('Cache-Control', 'no-cache');
   res.setHeader('Connection', 'keep-alive');
@@ -155,10 +213,12 @@ app.get('/stream', async (req, res) => {
       responseType: 'stream',
       data: {
         model: 'gemma3:1b',
-        messages: [{ role: 'user', content: prompt }],
+        messages: chatHistory,
         stream: true
       }
     });
+
+    let assistantReply = '';
 
     ollamaRes.data.on('data', chunk => {
       const lines = chunk.toString().split('\n').filter(Boolean);
@@ -166,17 +226,20 @@ app.get('/stream', async (req, res) => {
         try {
           const parsed = JSON.parse(line);
           const text = parsed.message?.content || parsed.response || '';
-          res.write(`data: ${text}\n\n`);
+          assistantReply += text;
+          res.write(text); // no `data:`, just raw text
         } catch (e) {
-          console.error('Stream parse error:', e);
+          console.error('JSON parse error:', e);
         }
       }
     });
 
-    ollamaRes.data.on('end', () => res.end());
+    ollamaRes.data.on('end', () => {
+      chatHistory.push({ role: 'assistant', content: assistantReply });
+      res.end();
+    });
   } catch (err) {
-    console.error('Streaming error:', err.message);
-    res.write(`data: ERROR: ${err.message}\n\n`);
+    res.write(`ERROR: ${err.message}`);
     res.end();
   }
 });
@@ -185,12 +248,6 @@ app.get('/stream', async (req, res) => {
 app.use("/app", express.static(__dirname + "/app"));
 
 const PORT = process.env.PORT || 3000;
-module.exports = app.listen(3000);
-console.log(`Server running on http://localhost:${PORT}`);
-// Start the server
-// const PORT = process.env.PORT || 3000;
-// app.listen(PORT, () => {
-//     console.log(`Server running on http://localhost:${PORT}`);
-// });
-
-
+app.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
+});

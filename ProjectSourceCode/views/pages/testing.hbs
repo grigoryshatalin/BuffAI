@@ -7,179 +7,112 @@
     color: white;
     font-family: monospace;
     padding: 1em;
-    overflow: hidden;
   }
 
-  .terminal-output {
+  #output {
     flex: 1;
     overflow-y: auto;
-    width: 100%;
     padding: 1em;
+    white-space: pre-wrap;
+    border: 1px solid #444;
+    margin-bottom: 1em;
+  }
+
+  .chat-bubble {
+    margin-bottom: 1em;
+    padding: 0.5em;
+  }
+
+  .user {
+    text-align: right;
+    color: #80dfff;
+  }
+
+  .assistant {
+    text-align: left;
+    color: #c0ffc0;
   }
 
   .input-box {
-    border: none;
+    width: 100%;
     background: #2d2d2d;
     color: white;
     font-size: 18px;
-    width: 100%;
     padding: 0.5em;
-    margin-top: 0.5em;
-    outline: none;
+    border: none;
   }
 
   button {
-    margin-top: 0.5em;
-    background-color: #3a3a3a;
+    background: #3a3a3a;
     color: white;
     border: none;
     padding: 0.4em 1em;
-    cursor: pointer;
-    font-family: monospace;
+    margin-top: 0.5em;
   }
 
   button:hover {
     background-color: #4f4f4f;
   }
-
-  a {
-    color: #00afff;
-    text-decoration: underline;
-  }
-
-  strong {
-    font-weight: bold;
-    color: #ffff66;
-  }
-
-  em {
-    font-style: italic;
-    color: #cccccc;
-  }
-
-  ul {
-    padding-left: 1.5em;
-    margin: 0.25em 0;
-  }
-
-  li {
-    margin-bottom: 0.25em;
-  }
 </style>
 
 <div class="terminal-container">
-  <span>Enter Command:</span>
-  <form id="prompt-form">
-    <input name="prompt" class="input-box" type="text" required autofocus>
-    <button type="submit">Submit</button>
+  <div id="output"></div>
+  <form id="chat-form">
+    <input name="prompt" class="input-box" type="text" required placeholder="Type your message..." autocomplete="off">
+    <button type="submit">Send</button>
   </form>
-
-  <div id="output" class="terminal-output"></div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script>
-  document.getElementById('prompt-form').addEventListener('submit', e => {
+  const chatForm = document.getElementById('chat-form');
+  const output = document.getElementById('output');
+
+  chatForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const prompt = e.target.prompt.value;
-    const output = document.getElementById('output');
-    output.innerHTML = '<div id="spinner">⏳ Thinking...</div>';
+    const input = chatForm.prompt;
+    const prompt = input.value.trim();
+    if (!prompt) return;
 
-    let fullBuffer = '';
-    let renderIndex = 0;
-    let rendering = false;
+    // Show user message
+    appendMessage('user', prompt);
+    input.value = '';
+    input.disabled = true;
 
-    const eventSource = new EventSource(`/stream?prompt=${encodeURIComponent(prompt)}`);
+    // Add assistant placeholder
+    const bubble = appendMessage('assistant', '');
+    let buffer = '';
 
-    eventSource.onmessage = (event) => {
-      fullBuffer += event.data;
+    const res = await fetch('/stream', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt })
+    });
 
-      if (!rendering && fullBuffer.length >= 40) {
-        document.getElementById('spinner')?.remove();
-        rendering = true;
-        startRendering();
-      }
-    };
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
 
-    eventSource.onerror = () => {
-      eventSource.close();
-    };
-
-    function startRendering() {
-      const interval = setInterval(() => {
-        if (renderIndex < fullBuffer.length) {
-          renderIndex++;
-          const current = fullBuffer.slice(0, renderIndex);
-          output.innerHTML = formatSections(current);
-          output.scrollTop = output.scrollHeight;
-        } else {
-          if (eventSource.readyState === 2) {
-            clearInterval(interval);
-            output.innerHTML = formatSections(fullBuffer) + "<br><em>[Connection closed]</em>";
-          }
-        }
-      }, 10);
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      const chunk = decoder.decode(value, { stream: true });
+      buffer += chunk;
+      bubble.innerHTML = marked.parse(buffer);
+      output.scrollTop = output.scrollHeight;
     }
 
-    function formatSections(text) {
-      const tokens = marked.lexer(text);
-      let html = '';
-      let currentSection = {
-        title: 'Introduction',
-        body: ''
-      };
-
-      const sections = [];
-
-      for (let token of tokens) {
-        if (token.type === 'paragraph') {
-          const trimmed = token.text.trim();
-          const isBoldHeader = /^\*\*.*\*\*$/.test(trimmed);
-
-          if (isBoldHeader) {
-            // Save previous section
-            if (currentSection.body.trim()) sections.push(currentSection);
-
-            currentSection = {
-              title: trimmed.replace(/\*\*/g, ''),
-              body: ''
-            };
-          } else {
-            currentSection.body += `<div>${marked.parseInline(token.text)}</div>`;
-          }
-        } else if (token.type === 'list') {
-          const listHTML = marked.parser([token]);
-          currentSection.body += listHTML;
-        } else {
-          currentSection.body += marked.parser([token]);
-        }
-      }
-
-      // Push the last section
-      if (currentSection.body.trim()) {
-        sections.push(currentSection);
-      }
-
-      // Render sections
-      for (let sec of sections) {
-        html += `
-          <div style="margin-top: 1em;">
-            <div style="font-weight: bold; font-size: 1.2em;">${sec.title}</div>
-            <div style="margin-left: 1.5em; margin-top: 0.3em;">
-              ${sec.body}
-            </div>
-          </div>
-        `;
-      }
-
-      return html;
-    }
+    input.disabled = false;
+    input.focus();
   });
+
+  function appendMessage(role, content) {
+    const bubble = document.createElement('div');
+    bubble.classList.add('chat-bubble', role);
+    bubble.innerHTML = role === 'assistant' ? '' : marked.parseInline(content);
+    output.appendChild(bubble);
+    output.scrollTop = output.scrollHeight;
+    return bubble;
+  }
 </script>
-
-
-
-
-
 
 {{> footer}}

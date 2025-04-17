@@ -1,0 +1,23 @@
+1. homepage get API
+- Query student table
+- Student ID
+- Major
+- Query the courses table using major
+- once you have the courses []
+- res.render (homepage, data)
+
+2. Homepage UI
+- handlebar
+- looping through each course
+- displays the name and course ID
+- Add the ADD button 
+- each add button when clicked should be a submit button 
+- each course that is displayed is a form
+<form >
+<input>
+<submit>
+</form>
+
+3. Create a student to course table with foreign keys 
+- student id
+- course id 
