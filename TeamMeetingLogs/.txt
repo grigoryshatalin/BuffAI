@@ -2,3 +2,12 @@ Week #2 Meeting notes
 - Greg showed us the ollama AI model and functionality
 - Discussed Part C of Lab 10 creating 2 more user stories per person
 - Made sure to verify what progress on our webpage we need to show in lab tomorrow
+
+
+Week #3 Meeting notes
+ - Grig decided not to fully train model to proceed forward
+ - finished Lab 11 to get tests working
+ - Edited the student sql table for degrees, minors, fullname, etc.
+ - Ari and Spencer split the remaining front end pages to work on 
+ - Marcus needs to finish majors and minors sql tables for front end development by next meeting 
+ - Grig, Marcus, and James to continue progressing with individual tasks  
