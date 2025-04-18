@@ -11,6 +11,12 @@ const axios = require('axios'); // Used to call Ollama API
 const validator = require('validator'); // run `npm install validator` if not installed
 const { Readable } = require('stream');
 
+app.use(session({
+  secret: 'mySecret123',
+  resave: false,
+  saveUninitialized: false
+}));
+
 // *****************************************************
 // <!-- Section 2 : Connect to DB -->
 // *****************************************************
@@ -55,9 +61,6 @@ app.get('/', (req, res) => {
     res.render('testing', { response: null }); // Pass empty response initially
 });
 
-//const all_students =
-//SELECT * FROM courses WHERE course_id =  
-
 
 // route to render home.hbs
 app.get('/home', (req, res) => {
@@ -94,10 +97,10 @@ app.get('/login', (req, res) =>
 
 //post request
 app.post('/login', async (req, res) => {
-  const { username, password } = req.body;
+  const { student_id, password } = req.body;
 
   try {
-      const user = await db.oneOrNone('SELECT * FROM users WHERE username = $1', [username]);
+      const user = await db.oneOrNone('SELECT * FROM students WHERE student_id = $1', [student_id]);
 
       if (user && await bcrypt.compare(password, user.password)) 
         {
