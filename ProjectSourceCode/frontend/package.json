@@ -31,7 +31,7 @@
     "scripts": {
         "prestart": "npm install --unsafe-perm",
         "start": "node index.js",
-        "dev": "nodemon index.js"
+        "dev": "nodemon index.js",
         "test": "mocha",
         "testandrun": "npm run prestart && npm run test && npm start"
     }
