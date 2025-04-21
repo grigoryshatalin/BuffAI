@@ -74,14 +74,11 @@
     const prompt = input.value.trim();
     if (!prompt) return;
 
-    // Show user message
     appendMessage('user', prompt);
     input.value = '';
     input.disabled = true;
 
-    // Add assistant placeholder
-    const bubble = appendMessage('assistant', '');
-    let buffer = '';
+    const bubble = appendMessage('assistant', '⏳ Assistant is thinking...');
 
     const res = await fetch('/stream', {
       method: 'POST',
@@ -89,12 +86,20 @@
       body: JSON.stringify({ prompt })
     });
 
+    if (!res.ok) {
+      bubble.innerHTML = '❌ Error getting response.';
+      input.disabled = false;
+      return;
+    }
+
     const reader = res.body.getReader();
     const decoder = new TextDecoder();
+    let buffer = '';
 
     while (true) {
       const { done, value } = await reader.read();
       if (done) break;
+
       const chunk = decoder.decode(value, { stream: true });
       buffer += chunk;
       bubble.innerHTML = marked.parse(buffer);
@@ -108,7 +113,7 @@
   function appendMessage(role, content) {
     const bubble = document.createElement('div');
     bubble.classList.add('chat-bubble', role);
-    bubble.innerHTML = role === 'assistant' ? '' : marked.parseInline(content);
+    bubble.innerHTML = content;
     output.appendChild(bubble);
     output.scrollTop = output.scrollHeight;
     return bubble;

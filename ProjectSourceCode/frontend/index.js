@@ -10,6 +10,9 @@ const bcrypt = require('bcryptjs');
 const axios = require('axios'); // Used to call Ollama API
 const validator = require('validator'); // run `npm install validator` if not installed
 const { Readable } = require('stream');
+// ollama
+const fs = require('fs');
+const { v4: uuidv4 } = require('uuid');
 
 app.use(session({
   secret: 'mySecret123',
@@ -196,13 +199,42 @@ let chatHistory = []; // per session — in-memory (could be user/session based)
 
 app.use(express.json());
 
-// ollama
 app.post('/stream', async (req, res) => {
   const { prompt } = req.body;
+  const student = req.session.user;
+
+  let studentInfo = '';
+  try {
+    const result = await db.one(
+      `SELECT fullName, email, year, major, degree, minor
+       FROM students WHERE student_id = $1`,
+      [student.student_id]
+    );
+
+    studentInfo = `The student using this session is:
+- Name: ${result.fullname}
+- Email: ${result.email}
+- Year: ${result.year}
+- Major: ${result.major}
+- Degree: ${result.degree}
+- Minor: ${result.minor || 'None'}
+
+Use this information to personalize your responses.`;
+
+  } catch (err) {
+    console.error('Failed to fetch student data:', err);
+    studentInfo = `The student's data could not be retrieved.`;
+  }
+
   const chatHistory = [
-    { role: 'system', content: 'You are a helpful assistant.' },
+    { role: 'system', content: `You are a college advisor AI assistant. ${studentInfo}` },
     { role: 'user', content: prompt }
   ];
+
+  const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+  const filePath = path.join(__dirname, `chat-${timestamp}.txt`);
+  const writeStream = fs.createWriteStream(filePath);
+  writeStream.write(`User: ${prompt}\nAssistant: `);
 
   res.setHeader('Content-Type', 'text/event-stream');
   res.setHeader('Cache-Control', 'no-cache');
@@ -220,16 +252,14 @@ app.post('/stream', async (req, res) => {
       }
     });
 
-    let assistantReply = '';
-
     ollamaRes.data.on('data', chunk => {
       const lines = chunk.toString().split('\n').filter(Boolean);
       for (const line of lines) {
         try {
           const parsed = JSON.parse(line);
           const text = parsed.message?.content || parsed.response || '';
-          assistantReply += text;
           res.write(text);
+          writeStream.write(text);
         } catch (err) {
           console.error('JSON parse error:', err);
         }
@@ -237,20 +267,22 @@ app.post('/stream', async (req, res) => {
     });
 
     ollamaRes.data.on('end', () => {
+      writeStream.end('\n\n');
       res.end();
     });
   } catch (err) {
     console.error('Ollama error:', err.message);
+    writeStream.end();
     res.write(`ERROR: ${err.message}`);
     res.end();
   }
 });
 
+
 //Route to interact with Rate My Professor
 app.use("/app", express.static(__dirname + "/app"));
 
 //Maps route
-const fs = require('fs');
 app.get('/map', (req, res) => {
   const mapScript = fs.readFileSync(path.join(__dirname, 'public', 'map.js'), 'utf-8');
   res.render('map', { title: 'Campus Map', mapScript });

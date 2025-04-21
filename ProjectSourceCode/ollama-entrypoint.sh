@@ -1,6 +1,6 @@
 #!/bin/bash
 
-MODEL_NAME="gemma"
+MODEL_NAME="gemma3:1b"
 
 echo "[entrypoint] Starting Ollama server..."
 ollama serve & 
