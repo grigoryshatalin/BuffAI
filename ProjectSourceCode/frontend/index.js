@@ -94,6 +94,13 @@ app.get('/calendar', (req, res) => {
 
 //get request for the login page just to test
 app.get('/login', (req, res) => {
+  if (req.session.user) {
+    return res.render('home', {
+      title: 'Home',
+      message: 'You are already logged in!'
+    });
+  }
+
   res.render('login');
 });
 

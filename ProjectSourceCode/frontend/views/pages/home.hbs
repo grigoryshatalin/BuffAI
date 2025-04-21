@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -37,7 +38,8 @@
     .circular-progress .progress {
       stroke: #3498db;
       stroke-dasharray: 251.2;
-      stroke-dashoffset: calc(251.2 * (1 - 0.75)); /* 75% progress */
+      stroke-dashoffset: calc(251.2 * (1 - 0.75));
+      /* 75% progress */
       transition: stroke-dashoffset 0.5s ease;
     }
 
@@ -94,7 +96,30 @@
     }
   </style>
 </head>
+
 <body>
+  {{#if message}}
+  <div id="fade-message" style="
+    background-color: #dff0d8;
+    color: #3c763d;
+    padding: 15px;
+    text-align: center;
+    font-weight: bold;
+    font-family: Poppins, sans-serif;
+    border-bottom: 2px solid #c3e6cb;">
+    {{message}}
+  </div>
+  <script>
+    setTimeout(() => {
+      const el = document.getElementById('fade-message');
+      if (el) {
+        el.style.transition = 'opacity 0.8s ease';
+        el.style.opacity = '0';
+        setTimeout(() => el.remove(), 1000);
+      }
+    }, 5000);
+  </script>
+  {{/if}}
 
   <!-- Circular Progress Bar -->
   <div class="circular-progress">
@@ -116,4 +141,5 @@
   </button>
 
 </body>
+
 </html>
