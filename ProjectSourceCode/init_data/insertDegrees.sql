@@ -20,7 +20,7 @@ VALUES
         ["MCEN 1040", "CHEM 1113", "CHEM 1400", "CHEN 1201", "CHEN 1211"],
         ["PHYS 1110", "PHYS 1115"],
         ["PHYS 1120", "PHYS 1125"]
-    ]', 
+    ]'::jsonb, 
     0, 
     41, 
     134, 
@@ -29,7 +29,7 @@ VALUES
     'Anthropology', 
     'BA', 
     'ANTH', 
-    '["ANTH 2010", "ANTH 2100", "ANTH 2200"]', 
+    '["ANTH 2010", "ANTH 2100", "ANTH 2200"]'::jsonb, 
     18, 
     3, 
     30, 
@@ -43,7 +43,7 @@ VALUES
             "CSPB 3308", "CSPB 1000", "CSPB 2820", "CSPB 3022", "CSPB 3112", "CSPB 3202",
             "CSPB 3287", "CSPB 3302", "CSPB 3403", "CSPB 3702", "CSPB 3753", "CSPB 4122",
             "CSPB 4253", "CSPB 4502", "CSPB 4622", "CSPB 4830", "CSPB 4900"
-        ]',
+        ]'::jsonb,
         0,
         0,
         68,
@@ -77,7 +77,7 @@ VALUES
         ["APPM 3570", "APPM 4560"],
         ["APPM 4560", "STAT 4520"],
         ["STAT 4000", "STAT 4010"]
-    ]',
+    ]'::jsonb,
     25,
     48,
     128,
@@ -111,7 +111,7 @@ VALUES
         ["PHYS 1120", "PHYS 1125"],
         "AREN 4606",
         "CVEN 3256"
-    ]',
+    ]'::jsonb,
     0,
     21,
     128,
@@ -126,7 +126,7 @@ VALUES
         "ARTH 1500",
         "ARTH 1600",
         "ARTH 4919"
-    ]',
+    ]'::jsonb,
     18,
     0,
     33,
@@ -141,7 +141,7 @@ VALUES
         "ARTH 1500",
         "ARTH 1600",
         "ARTS 2222"
-    ]',
+    ]'::jsonb,
     18,
     0,
     33,
@@ -157,7 +157,7 @@ VALUES
         "ARAB 1020",
         "ARAB 2110",
         "ARAB 2120"
-    ]',
+    ]'::jsonb,
     12,
     9,
     42,
@@ -171,7 +171,7 @@ VALUES
         "ASTR 2100", "ASTR 2000", "ASTR 2010", "ASTR 3720", "ASTR 3750",
         "MATH 1300", "MATH 2300", "MATH 2400", "APPM 2360",
         "CHEM 1113", "CHEM 1114", "CHEM 1133", "CHEM 1134"
-    ]',
+    ]'::jsonb,
     12, 0, 59, FALSE
     ),(
     'Atmospheric and Oceanic Sciences',
@@ -188,7 +188,7 @@ VALUES
         "CSCI 1200",
         "PHYS 1110",
         "PHYS 1120"
-    ]',
+    ]'::jsonb,
     12, 0, 76, FALSE
     ),(
     'Biochemistry',
@@ -207,7 +207,7 @@ VALUES
         ["MATH 2300", "APPM 1360"],
         "MCDB 1150", "MCDB 2150",
         "EBIO 1230", "EBIO 1240"
-    ]',
+    ]'::jsonb,
     0, 0, 68, FALSE
     ),(
     'Biological Engineering',
@@ -233,7 +233,7 @@ VALUES
         "BCHM 4611",
         "CHEM 3311", "CHEM 3321", "CHEM 3331", "CHEM 3341",
         ["PHYS 1110", "PHYS 1115"]
-    ]',
+    ]'::jsonb,
     3, 0, 89, FALSE
     ),(
     'Biomedical Engineering',
@@ -261,7 +261,7 @@ VALUES
         ["CHEN 1310", "CSCI 1300"],
         ["CHEN 3010", "STAT 4000"],
         ["CHEN 1201", "CHEN 1211", "CHEM 1113", "CHEM 1400"]
-    ]',
+    ]'::jsonb,
     15, 25, 128, FALSE
     ),(
     'Business',
@@ -272,7 +272,7 @@ VALUES
         "BCOR 2201", "BCOR 2202", "BCOR 2203", "BCOR 2204", "BCOR 2205", "BCOR 2206",
         "BCOR 2301", "BCOR 2302", "BCOR 2303", "BCOR 2304",
         "BASE 2104"
-    ]',
+    ]'::jsonb,
     18, 33, 81, FALSE
     ),(
     'Chemical Engineering',
@@ -297,7 +297,7 @@ VALUES
         ["PHYS 1120", "PHYS 1125"],
         "PHYS 1140",
         ["BCHM 4611", "CHEM 4011", "CHEM 4531"]
-    ]',
+    ]'::jsonb,
     15, 21, 128, FALSE
     ),(
     'Chemistry',
@@ -320,7 +320,7 @@ VALUES
         ["MATH 1300", "APPM 1350"],
         ["MATH 2300", "APPM 1360"],
         ["MATH 2400", "APPM 2350"]
-    ]',
+    ]'::jsonb,
     30, 36, 120, FALSE
     ),(
     'Chinese',
@@ -335,7 +335,7 @@ VALUES
         "CHIN 1051",
         "CHIN 2441",
         "CHIN 2242"
-    ]',
+    ]'::jsonb,
     0, 0, 30, FALSE
     ),(
     'Civil Engineering',
@@ -370,7 +370,7 @@ VALUES
         "CVEN 3718",
         "CVEN 4333",
         ["CVEN 4545", "CVEN 4555"]
-    ]',
+    ]'::jsonb,
     12, 21, 128, FALSE
     ),(
     'Communication',
@@ -387,7 +387,7 @@ VALUES
         "COMM 2410",
         ["COMM 3740", "COMM 3750", "COMM 3760"],
         ["COMM 4220", "COMM 4300", "COMM 4510", "COMM 4600", "COMM 4610"]
-    ]',
+    ]'::jsonb,
     9, 0, 36, TRUE
     ),(
     'Computer Science',
@@ -401,7 +401,7 @@ VALUES
         ["MATH 2300", "APPM 1360"],
         ["CSCI 2824", "ECEN 2703", "APPM 3170", "MATH 2001"],
         "CSCI 2820"
-    ]',
+    ]'::jsonb,
     7, 0, 120, TRUE
     ),(
     'Computer Science',
@@ -429,7 +429,7 @@ VALUES
         ["PHYS 1110", "PHYS 1115"],
         "PHYS 1120",
         "PHYS 1140"
-    ]',
+    ]'::jsonb,
     7, 42, 128, FALSE
     ),(
     'Creative Technology and Design',
@@ -445,7 +445,7 @@ VALUES
         ["ATLS 2000", "ENES 2020"],
         "ATLS 2100", "ATLS 2200", "ATLS 2300",
         "ATLS 3100", "ATLS 3200", "ATLS 3300", "ATLS 4000", "ATLS 4010"
-    ]',
+    ]'::jsonb,
     0, 78, 128, FALSE
     ),(
     'Dance',
@@ -460,7 +460,7 @@ VALUES
         "THTR 4029", "THTR 4081",
         ["DNCE 3014", "DNCE 3024"],
         ["DNCE 3033", "DNCE 3043"]
-    ]',
+    ]'::jsonb,
     6, 0, 47, FALSE
     ),(
     'Ecology and Evolutionary Biology',
@@ -472,7 +472,7 @@ VALUES
         "EBIO 3240", "EBIO 4740", "EBIO 4160",
         "IPHY 3280",
         "MATH 1300", "MATH 2300", "MATH 2380"
-    ]',
+    ]'::jsonb,
     8, 0, 38, FALSE
     ),(
     'Economics',
@@ -483,7 +483,7 @@ VALUES
         ["ECON 3070", "ECON 3080"],
         "ECON 3818", "ECON 4818",
         ["APPM 1350", "ECON 1088", "MATH 1300", "MATH 1330"]
-    ]',
+    ]'::jsonb,
     12, 0, 37, FALSE
     ),(
     'Education Studies',
@@ -502,7 +502,7 @@ VALUES
         "EDUC 4425",
         "EDUC 2411",
         "EDUC 3570"
-    ]',
+    ]'::jsonb,
     24, 0, 39, FALSE
     ),(
     'Electrical Engineering',
@@ -533,7 +533,7 @@ VALUES
         "ECEN 4620",
         "ECEN 2410",
         "ECEN 2420"
-    ]',
+    ]'::jsonb,
     15, 37, 128, FALSE
     );
 
@@ -542,7 +542,7 @@ VALUES
     (
     'Anthropology (Minor)',
     'ANTH',
-    '["ANTH 2010", "ANTH 2100", "ANTH 2200"]',
+    '["ANTH 2010", "ANTH 2100", "ANTH 2200"]'::jsonb,
     9, 0, 18
     ),
     (
@@ -552,32 +552,32 @@ VALUES
         ["APPM 2350", "MATH 2400"],
         "APPM 2360", "APPM 3310", "APPM 4350", "APPM 4360", "APPM 3570",
         ["STAT 4000", "STAT 4010"]
-    ]',
+    ]'::jsonb,
     3, 0, 20
     ),(
     'Arabic (Minor)',
     'ARAB',
-    '["ARAB 2010", "ARAB 2120", "ARAB 3110"]',
+    '["ARAB 2010", "ARAB 2120", "ARAB 3110"]'::jsonb,
     6, 0, 18
     ),(
     'Architectural Engineering (Minor)',
     'AREN',
-    '["AREN 2050", "CVEN 3246", ["CVEN 3161", "MCEN 2063"], "AREN 3010", "AREN 4110"]',
+    '["AREN 2050", "CVEN 3246", ["CVEN 3161", "MCEN 2063"], "AREN 3010", "AREN 4110"]'::jsonb,
     3, 0, 18
     ),(
     'Art History (Minor)',
     'ARTH',
-    '["ARTH 1300", "ARTH 1400"]',
+    '["ARTH 1300", "ARTH 1400"]'::jsonb,
     12, 0, 18
     ),(
     'Art Practices (Minor)',
     'ARTS',
-    '["ARTS 1010", "ARTS 1020"]',
+    '["ARTS 1010", "ARTS 1020"]'::jsonb,
     9, 3, 18
     ),(
     'Asian Studies (Minor)',
     'ASIA',
-    '["ASIA 2000"]',
+    '["ASIA 2000"]'::jsonb,
     9, 9, 21
     ),(
     'Astrophysical and Planetary Sciences (Minor)',
@@ -588,12 +588,12 @@ VALUES
         "ASTR 2100",
         ["ASTR 3720", "ASTR 3750"],
         ["ASTR 3400", "ASTR 3510", "ASTR 3520", "ASTR 3560", "ASTR 3710", "ASTR 3720", "ASTR 3730", "ASTR 3740", "ASTR 3750", "ASTR 3760", "ASTR 3830", "ASTR 4330", "ASTR 4840", "ATOC 4720"]
-    ]',
+    ]'::jsonb,
     0, 0, 18
     ),(
     'Atmospheric and Oceanic Sciences (Minor)',
     'ATOC',
-    '[]',
+    '[]'::jsonb,
     9, 9, 18
     ),(
     'Biochemistry',
@@ -606,7 +606,7 @@ VALUES
         ["CHEM 3331", "CHEM 3471", "BCHM 3491"],
         ["CHEM 3341", "CHEM 3381"],
         ["BCHM 2700", "BCHM 4611"]
-    ]',
+    ]'::jsonb,
     3, 0, 21
     ),(
     'Biomedical Engineering (Minor)',
@@ -614,12 +614,12 @@ VALUES
     '[
         "BMEN 2000",
         ["BMEN 2010", "BMEN 2100", "BMEN 4117", "BIEN 2810", "BIEN 3800", "BIEN 4802", "ECEN 4933", "IPHY 3410", "IPHY 3430", "MCDB 1150", "MCDB 2150", "PHIL 1160", "PHIL 3160"]
-    ]',
+    ]'::jsonb,
     0, 12, 18
     ),(
     'Business (Minor)',
     'BUSM',
-    '["BUSM 2010", "BUSM 2011", "BUSM 2020", "BUSM 2021", "BUSM 4010"]',
+    '["BUSM 2010", "BUSM 2011", "BUSM 2020", "BUSM 2021", "BUSM 4010"]'::jsonb,
     3, 0, 12
     ),(
     'Chemistry (minor)',
@@ -632,32 +632,32 @@ VALUES
         ["CHEM 3341", "CHEM 3381"],
         "CHEM 4511",
         ["CHEM 4011", "CHEM 4171", "CHEM 4531"]
-    ]',
+    ]'::jsonb,
     0, 0, 26
     ),(
     'Chinese (Minor)',
     'CHIN',
-    '["CHIN 2120", "CHIN 3110", "CHIN 3120"]',
+    '["CHIN 2120", "CHIN 3110", "CHIN 3120"]'::jsonb,
     3, 0, 18
     ),(
     'Cinema Studies (Minor)',
     'CINE',
-    '["CINE 1502", ["CINE 3051", "CINE 3061"]]',
+    '["CINE 1502", ["CINE 3051", "CINE 3061"]]'::jsonb,
     9, 3, 19
     ),(
     'Civil Engineering (Minor)',
     'CVEN',
-    '["CVEN 3246", "CVEN 3323", "CVEN 3414", "CVEN 3525", "CVEN 3708"]',
+    '["CVEN 3246", "CVEN 3323", "CVEN 3414", "CVEN 3525", "CVEN 3708"]'::jsonb,
     3, 0, 18
     ),(
     'Classics (Minor)',
     'LATN',
-    '["ARTH 4929", "ARTH 4939", "PHIL 3000"]',
+    '["ARTH 4929", "ARTH 4939", "PHIL 3000"]'::jsonb,
     9, 2, 18
     ),(
     'Communication (Minor)',
     'COMM',
-    '["COMM 1210", ["COMM 1300", "COMM 1600"]]',
+    '["COMM 1210", ["COMM 1300", "COMM 1600"]]'::jsonb,
     9, 3, 18
     ),(
     'Computational Biology (Minor)',
@@ -671,7 +671,7 @@ VALUES
         "CSCI 3352",
         "CSCI 4118",
         "APPM 4390"
-    ]',
+    ]'::jsonb,
     0, 0, 24
     ),(
     'Computer Engineering (Minor)',
@@ -681,7 +681,7 @@ VALUES
         "ECEN 2350",
         ["ECEN 2360", "CSCI 2400"],
         "ECEN 2370"
-    ]',
+    ]'::jsonb,
     3, 0, 20
     ),(
     'Computer Science (Minor)',
@@ -691,6 +691,6 @@ VALUES
         "CSCI 2270",
         ["CSCI 2400", "ECEN 3593"],
         ["CSCI 3104", "CSCI 3155", "CSCI 3753"]
-    ]',
+    ]'::jsonb,
     5, 0, 21
     );

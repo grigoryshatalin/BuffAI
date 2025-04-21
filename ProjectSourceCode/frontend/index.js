@@ -211,32 +211,99 @@ app.post('/stream', async (req, res) => {
   const student = req.session.user;
 
   let studentInfo = '';
+  let formattedReqs = 'Degree requirements could not be loaded.';
+
   try {
-    const result = await db.one(
-      `SELECT fullName, email, year, major, degree, minor
-       FROM students WHERE student_id = $1`,
-      [student.student_id]
-    );
+    const result = await db.one(`
+      SELECT 
+        s.fullName, s.email, s.year, s.major, s.degree, s.minor,
+        d.reqs, d.totalCreditHours, d.electives, d.UpperDivisonCreds, d.hasMinor
+      FROM students s
+      JOIN degrees d ON s.major = d.major AND s.degree = d.degreeName
+      WHERE s.student_id = $1
+    `, [student.student_id]);
 
-    studentInfo = `The student using this session is:
-- Name: ${result.fullname}
-- Email: ${result.email}
-- Year: ${result.year}
-- Major: ${result.major}
-- Degree: ${result.degree}
-- Minor: ${result.minor || 'None'}
+    const requirements = Array.isArray(result.reqs) ? result.reqs : JSON.parse(result.reqs);
+    const allCourses = await db.any('SELECT course_id, course_name FROM courses');
+    const courseMap = Object.fromEntries(allCourses.map(c => [c.course_id, c.course_name]));
 
-Use this information to personalize your responses.`;
+    formattedReqs = requirements.map((req, i) => {
+      if (Array.isArray(req)) {
+        const options = req.map(code => {
+          const title = courseMap[code] || 'UNKNOWN';
+          return `${code}: ${title}`;
+        });
+        return `Requirement ${i + 1}: ONE OF → ${options.join(', ')}`;
+      } else {
+        const title = courseMap[req] || 'UNKNOWN';
+        return `Requirement ${i + 1}: ${req}: ${title}`;
+      }
+    }).join('\n');
+
+    studentInfo = `
+STUDENT PROFILE
+---------------
+Name: ${result.fullName}
+Email: ${result.email}
+Year: ${result.year}
+Major: ${result.major}
+Degree: ${result.degree}
+Minor: ${result.minor || 'None'}
+
+DEGREE REQUIREMENTS
+-------------------
+Total Credit Hours: ${result.totalcredithours}
+Electives: ${result.electives}
+Upper Division Credits Required: ${result.upperdivisoncreds}
+Minor Required: ${result.hasminor ? 'Yes' : 'No'}
+
+COURSE REQUIREMENTS
+-------------------
+(All required unless marked as "one of")
+
+${formattedReqs}
+`;
+
 
   } catch (err) {
     console.error('Failed to fetch student data:', err);
-    studentInfo = `The student's data could not be retrieved.`;
+    studentInfo = "The student's data could not be retrieved.";
   }
 
   const chatHistory = [
-    { role: 'system', content: `You are a college advisor AI assistant. ${studentInfo}` },
-    { role: 'user', content: prompt }
+    {
+      role: 'system',
+      content: `
+You are a helpful college advisor AI assistant.
+
+The student is already authenticated. You are allowed to reference their profile.
+
+Here is their profile:
+
+${studentInfo}
+
+You may directly answer questions like "what is my major" or "do I have a minor?".
+Do not say you cannot access their data.
+  
+  ⚠️ Important Instructions:
+  - You are explicitly allowed to refer to the student's name, email, major, year, degree, minor, and requirements.
+  - If the user asks questions like "what is my major" or "what are my requirements," you must answer directly from the provided data.
+  - Do NOT respond with "I cannot access that" or "I don't know your personal info." You already have it.
+  - If a field is missing or null (e.g., no minor), respond accordingly (e.g., "You have no minor declared").
+  
+  Degree requirements format:
+  - Treat outer list items as **AND** conditions (all must be satisfied).
+  - Treat inner lists (arrays) as **OR** choices (choose one).
+  - Requirements are listed below for context and should be referenced if the user asks for guidance. Do not simply restate them unless asked.
+  
+  Begin responding to the user's question below.`
+    },
+    {
+      role: 'user',
+      content: prompt
+    }
   ];
+
 
   const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
   const filePath = path.join(__dirname, `chat-${timestamp}.txt`);
@@ -248,12 +315,14 @@ Use this information to personalize your responses.`;
   res.setHeader('Connection', 'keep-alive');
 
   try {
+    const fullPromptLog = chatHistory.map(msg => `${msg.role.toUpperCase()}: ${msg.content}`).join('\n\n');
+    fs.writeFileSync(`full-prompt-${timestamp}.txt`, fullPromptLog);
     const ollamaRes = await axios({
       method: 'post',
       url: 'http://ollama:11434/api/chat',
       responseType: 'stream',
       data: {
-        model: 'gemma',
+        model: 'gemma3:1b',
         messages: chatHistory,
         stream: true
       }
