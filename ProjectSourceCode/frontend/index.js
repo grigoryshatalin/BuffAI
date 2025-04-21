@@ -61,7 +61,7 @@ app.use(express.json()); // Allow JSON body parsing
 
 // Route to render testing.hbs
 app.get('/', (req, res) => {
-    res.render('testing', { response: null }); // Pass empty response initially
+  res.render('testing', { response: null }); // Pass empty response initially
 });
 
 
@@ -72,14 +72,14 @@ app.get('/home', (req, res) => {
   //.then(courses => {
   //  console.log(courses)
   //  res.render('pages/courses', {
-    //  email: user.email,
-    //  courses,
-    //  action: req.query.taken ? 'delete' : 'add',
-   // });
+  //  email: user.email,
+  //  courses,
+  //  action: req.query.taken ? 'delete' : 'add',
+  // });
 
-//  })
+  //  })
 
-  res.render('home', { title: 'Home'});
+  res.render('home', { title: 'Home' });
 });
 
 // Get request for logout page
@@ -93,49 +93,45 @@ app.get('/calendar', (req, res) => {
 });
 
 //get request for the login page just to test
-app.get('/login', (req, res) => 
-{
+app.get('/login', (req, res) => {
   res.render('login');
 });
 
 //post request
 app.post('/login', async (req, res) => {
   const { student_id, password } = req.body;
+  console.log('Login attempt:', student_id, password);
 
   try {
-      const user = await db.oneOrNone('SELECT * FROM students WHERE student_id = $1', [student_id]);
-
-      if (user && await bcrypt.compare(password, user.password)) 
-        {
-          req.session.user = user;
-          res.redirect('/home');
-      } 
-      else 
-      {
-          res.render('login', { error: 'Invalid username or password' });
-      }
-  } 
-  catch (error) 
-  {
-      console.error('Error during login:', error);
-      res.render('login', { error: 'Something went wrong. Please try again.' });
+    const user = await db.oneOrNone('SELECT * FROM students WHERE student_id = $1', [student_id]);
+    console.log('Found user:', user);
+    if (user && await bcrypt.compare(password, user.password)) {
+      req.session.user = user;
+      res.redirect('/home');
+    }
+    else {
+      res.render('login', { error: 'Invalid username or password' });
+    }
+  }
+  catch (error) {
+    console.error('Error during login:', error);
+    res.render('login', { error: 'Something went wrong. Please try again.' });
   }
 });
 
 //testing
 app.get('/welcome', (req, res) => {
-  res.json({status: 'success', message: 'Welcome!'});
+  res.json({ status: 'success', message: 'Welcome!' });
 });
 
 //get and post request for register page from the login page
-app.get('/register', (req, res) => 
-{
+app.get('/register', (req, res) => {
   res.render('register');
 });
 
 // Route to handle registration form submission (POST request)
 app.post('/register', async (req, res) => {
-  const{
+  const {
     student_id,
     fullName,
     email,
@@ -145,8 +141,8 @@ app.post('/register', async (req, res) => {
     degree,
     minor
   } = req.body;
-
-  if(
+  console.log('Register body:', req.body);
+  if (
     !student_id ||
     !fullName ||
     !email ||
@@ -156,23 +152,22 @@ app.post('/register', async (req, res) => {
     !year ||
     !major ||
     !degree
-  ){
-    return res.status(400).render('register', {error: 'Please fill out all required fields correctly.'});
+  ) {
+    return res.status(400).render('register', { error: 'Please fill out all required fields correctly.' });
   }
-
-  try{
+  try {
     const validDegree = await db.oneOrNone(
       'SELECT 1 FROM degrees WHERE major = $1 AND degreeName = $2',
       [major, degree]
-    );if(!validDegree){
+    ); if (!validDegree) {
       return res.status(400).render('register', {
         error: 'Selected degree does not exist for this major.'
       });
-    }if(minor){
+    } if (minor) {
       const validMinor = await db.oneOrNone(
         'SELECT 1 FROM minors WHERE minor = $1',
         [minor]
-      );if (!validMinor) {
+      ); if (!validMinor) {
         return res.status(400).render('register', {
           error: 'Selected minor does not exist.'
         });
@@ -180,13 +175,18 @@ app.post('/register', async (req, res) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
+    console.log('Hashed password:', hashedPassword); // should start with $2a$ or $2b$
+    console.log('Registered user with student_id:', student_id);
+    const testUser = await db.oneOrNone('SELECT * FROM students WHERE student_id = $1', [student_id]);
+    console.log('After register, found test user:', testUser);
+
     await db.none(
       `INSERT INTO students (
         student_id, fullName, email, year, major, degree, minor, password
       ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
       [student_id, fullName, email, year, major, degree, minor || null, hashedPassword]
-    );res.redirect('/login');
-  }catch(error){
+    ); res.redirect('/login');
+  } catch (error) {
     console.error("Registration error:", error);
     res.status(500).render('register', {
       error: 'Something went wrong. Please try again.'
@@ -291,5 +291,5 @@ app.get('/map', (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`Server running on http://localhost:${PORT}`);
 });
