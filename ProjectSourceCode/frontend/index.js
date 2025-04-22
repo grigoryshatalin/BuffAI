@@ -78,17 +78,64 @@ app.get('/home', (req, res) => {
   // });
 
   //  })
+  if (!req.session.user) {
+    return res.render('login', {
+      title: 'Login',
+      message: 'You are not logged in!'
+    });
+  }
 
   res.render('home', { title: 'Home' });
 });
 
+
+app.get('/hobbies', (req, res) => {
+
+  if (!req.session.user) {
+    return res.render('login', {
+      title: 'Login',
+      message: 'You are not logged in!'
+    });
+  }
+
+  res.render('hobbies', { title: 'Hobbies and Interests' });
+});
+
+
+app.get('/rate-my-professor', (req, res) => {
+
+  if (!req.session.user) {
+    return res.render('login', {
+      title: 'Login',
+      message: 'You are not logged in!'
+    });
+  }
+
+  res.render('rate-my-professor', { title: 'Rate My Professor' });
+});
+
+
 // Get request for logout page
 app.get('/logout', (req, res) => {
-  res.render('logout', { title: 'logout' });
+  req.session.destroy(err => {
+    if (err) {
+      console.error('Logout error:', err);
+      return res.status(500).send('Could not log out. Please try again.');
+    }
+    res.clearCookie('connect.sid'); // optional: explicitly clear the session cookie
+    res.redirect('/login'); // or wherever you want to redirect after logout
+  });
 });
+
 
 // Get request for calendar
 app.get('/calendar', (req, res) => {
+  if (!req.session.user) {
+    return res.render('login', {
+      title: 'Login',
+      message: 'You are not logged in!'
+    });
+  }
   res.render('calendar', { title: 'calendar' });
 });
 
@@ -360,6 +407,12 @@ app.use("/app", express.static(__dirname + "/app"));
 
 //Maps route
 app.get('/map', (req, res) => {
+  if (!req.session.user) {
+    return res.render('login', {
+      title: 'Login',
+      message: 'You are not logged in!'
+    });
+  }
   const mapScript = fs.readFileSync(path.join(__dirname, 'public', 'map.js'), 'utf-8');
   res.render('map', { title: 'Campus Map', mapScript });
 });
