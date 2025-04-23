@@ -81,26 +81,33 @@ app.get('/home', async (req, res) => {
   let courses = [];
   let hobbies = [];
 
-  if (student) {
-    try {
-      courses = await db.any(`
-        SELECT c.course_id, c.course_name
-        FROM student_courses sc
-        JOIN courses c ON sc.course_id = c.course_id
-        WHERE sc.student_id = $1
-      `, [student.student_id]);
+  try {
+    courses = await db.any(`
+      SELECT c.course_id, c.course_name
+      FROM student_courses sc
+      JOIN courses c ON sc.course_id = c.course_id
+      WHERE sc.student_id = $1
+    `, [student.student_id]);
 
-      hobbies = await db.any(`
-        SELECT hobby FROM student_hobbies WHERE student_id = $1
-      `, [student.student_id]);
+    hobbies = await db.any(`
+      SELECT hobby FROM student_hobbies WHERE student_id = $1
+    `, [student.student_id]);
 
-    } catch (err) {
-      console.error('Error loading student info:', err);
-    }
+  } catch (err) {
+    console.error('Error loading student info:', err);
   }
 
-  res.render('home', { title: 'Home', added, message, courses, layout: 'main', showNav: true });
+  res.render('home', {
+    title: 'Home',
+    added,
+    message,
+    courses,
+    hobbies, // ✅ now it's passed to the template
+    layout: 'main',
+    showNav: true
+  });
 });
+
 
 app.post('/remove-class', async (req, res) => {
   const student = req.session.user;
