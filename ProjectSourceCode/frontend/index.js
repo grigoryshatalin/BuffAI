@@ -66,7 +66,7 @@ app.get('/', (req, res) => {
 
 
 // route to render home.hbs
-app.get('/home', (req, res) => {
+app.get('/home', async (req, res) => {
   //queries
   //db.any(all_students, [req.session.user.student_id])
   //.then(courses => {
@@ -85,8 +85,48 @@ app.get('/home', (req, res) => {
     });
   }
 
-  res.render('home', { title: 'Home' });
+  const student = req.session.user;
+  const added = req.query.added;
+  const message = req.query.message;
+
+  let courses = [];
+
+  if (student) {
+    try {
+      courses =  await db.any(`
+        SELECT c.course_id, c.course_name
+        FROM student_courses sc
+        JOIN courses c ON sc.course_id = c.course_id
+        WHERE sc.student_id = $1
+      `, [student.student_id]);
+    } catch (err) {
+      console.error('Error fetching student courses:', err);
+    }
+  }
+
+  res.render('home', { title: 'Home', added, message, courses });
 });
+
+app.post('/remove-class', async (req, res) => {
+  const student = req.session.user;
+  const { course_id } = req.body;
+
+  if (!student || !course_id) {
+    return res.redirect('/home?message=Missing+info');
+  }
+
+  try {
+    await db.none(
+      `DELETE FROM student_courses WHERE student_id = $1 AND course_id = $2`,
+      [student.student_id, course_id]
+    );
+    res.redirect('/home?message=Removed+course+' + encodeURIComponent(course_id));
+  } catch (err) {
+    console.error('Failed to remove class:', err);
+    res.redirect('/home?message=Failed+to+remove+course');
+  }
+});
+
 
 
 app.get('/hobbies', (req, res) => {
@@ -113,6 +153,39 @@ app.get('/rate-my-professor', (req, res) => {
 
   res.render('rate-my-professor', { title: 'Rate My Professor' });
 });
+
+app.post('/add-class', async (req, res) => {
+  const student = req.session.user;
+  const { course_id } = req.body;
+
+  if (!student || !course_id) {
+    return res.redirect('/home?message=Missing%20student%20or%20course%20ID');
+  }
+
+  try {
+    // Validate course
+    const course = await db.oneOrNone('SELECT course_id FROM courses WHERE course_id = $1', [course_id]);
+
+    if (!course) {
+      return res.redirect('/home?message=Invalid%20course%20code');
+    }
+
+    // Insert only if not already taken
+    await db.none(`
+      INSERT INTO student_courses (course_id, student_id)
+      VALUES ($1, $2)
+      ON CONFLICT DO NOTHING
+    `, [course_id, student.student_id]);
+
+    res.redirect(`/home?added=${encodeURIComponent(course_id)}`);
+  } catch (err) {
+    console.error('Error adding class:', err);
+    res.redirect('/home?message=Something%20went%20wrong');
+  }
+});
+
+
+
 
 
 // Get request for logout page
@@ -259,6 +332,7 @@ app.post('/stream', async (req, res) => {
 
   let studentInfo = '';
   let formattedReqs = 'Degree requirements could not be loaded.';
+  let courseListText = 'No courses added.';
 
   try {
     const result = await db.one(`
@@ -273,6 +347,18 @@ app.post('/stream', async (req, res) => {
     const requirements = Array.isArray(result.reqs) ? result.reqs : JSON.parse(result.reqs);
     const allCourses = await db.any('SELECT course_id, course_name FROM courses');
     const courseMap = Object.fromEntries(allCourses.map(c => [c.course_id, c.course_name]));
+
+    // Get current courses taken by the student
+    const takenCourses = await db.any(`
+      SELECT c.course_id, c.course_name
+      FROM student_courses sc
+      JOIN courses c ON sc.course_id = c.course_id
+      WHERE sc.student_id = $1
+    `, [student.student_id]);
+
+    if (takenCourses.length > 0) {
+      courseListText = takenCourses.map(c => `- ${c.course_id}: ${c.course_name}`).join('\n');
+    }
 
     formattedReqs = requirements.map((req, i) => {
       if (Array.isArray(req)) {
@@ -309,8 +395,11 @@ COURSE REQUIREMENTS
 (All required unless marked as "one of")
 
 ${formattedReqs}
-`;
 
+CURRENTLY ADDED COURSES
+-----------------------
+${courseListText}
+`;
 
   } catch (err) {
     console.error('Failed to fetch student data:', err);
@@ -331,19 +420,20 @@ ${studentInfo}
 
 You may directly answer questions like "what is my major" or "do I have a minor?".
 Do not say you cannot access their data.
-  
-  ⚠️ Important Instructions:
-  - You are explicitly allowed to refer to the student's name, email, major, year, degree, minor, and requirements.
-  - If the user asks questions like "what is my major" or "what are my requirements," you must answer directly from the provided data.
-  - Do NOT respond with "I cannot access that" or "I don't know your personal info." You already have it.
-  - If a field is missing or null (e.g., no minor), respond accordingly (e.g., "You have no minor declared").
-  
-  Degree requirements format:
-  - Treat outer list items as **AND** conditions (all must be satisfied).
-  - Treat inner lists (arrays) as **OR** choices (choose one).
-  - Requirements are listed below for context and should be referenced if the user asks for guidance. Do not simply restate them unless asked.
-  
-  Begin responding to the user's question below.`
+
+⚠️ Important Instructions:
+- You are explicitly allowed to refer to the student's name, email, major, year, degree, minor, current coursework, and requirements.
+- If the user asks questions like "what is my major" or "what courses have I taken?", answer directly from the provided data.
+- Do NOT respond with "I cannot access that" or "I don't know your personal info." You already have it.
+- If a field is missing or null (e.g., no minor), respond accordingly (e.g., "You have no minor declared").
+
+Degree requirements format:
+- Outer list = **AND** conditions (all must be satisfied).
+- Inner list = **OR** choices (choose one).
+
+Do not list every requirement unless asked.
+Begin responding to the user’s question below.
+      `
     },
     {
       role: 'user',
