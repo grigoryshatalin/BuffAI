@@ -104,7 +104,7 @@ app.get('/home', async (req, res) => {
     }
   }
 
-  res.render('home', { title: 'Home', added, message, courses });
+  res.render('home', { title: 'Home', added, message, courses, layout: 'main', showNav: true });
 });
 
 app.post('/remove-class', async (req, res) => {
