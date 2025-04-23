@@ -61,7 +61,7 @@ app.use(express.json()); // Allow JSON body parsing
 
 //change it so it shows the login screen first
 app.get('/', (req, res) => {
-  res.render('testing', { response: null }); // Pass empty response initially
+  res.render('login', {title: 'login', formaat: 'main', showNav: false }); // Pass empty response initially
 });
 
 
@@ -253,7 +253,7 @@ app.get('/welcome', (req, res) => {
 
 //get and post request for register page from the login page
 app.get('/register', (req, res) => {
-  res.render('register', { title: 'Register', layout: 'main', showNav: true });
+  res.render('register', { title: 'Register', layout: 'main', showNav: false });
 });
 
 // Route to handle registration form submission (POST request)
@@ -280,7 +280,12 @@ app.post('/register', async (req, res) => {
     !major ||
     !degree
   ) {
-    return res.status(400).render('register', { error: 'Please fill out all required fields correctly.' });
+    return res.status(400).render('register', 
+      {
+      error: 'Please fill out all required fields correctly.',
+      layout: 'main',
+      showNav: false
+    });
   }
   try {
     const validDegree = await db.oneOrNone(
@@ -288,7 +293,9 @@ app.post('/register', async (req, res) => {
       [major, degree]
     ); if (!validDegree) {
       return res.status(400).render('register', {
-        error: 'Selected degree does not exist for this major.'
+        error: 'Selected degree does not exist for this major.',
+        layout: 'main',
+        showNav: false
       });
     } if (minor) {
       const validMinor = await db.oneOrNone(
@@ -296,7 +303,9 @@ app.post('/register', async (req, res) => {
         [minor]
       ); if (!validMinor) {
         return res.status(400).render('register', {
-          error: 'Selected minor does not exist.'
+          error: 'Selected minor does not exist.',
+          layout: 'main',
+          showNav: false
         });
       }
     }
@@ -316,7 +325,9 @@ app.post('/register', async (req, res) => {
   } catch (error) {
     console.error("Registration error:", error);
     res.status(500).render('register', {
-      error: 'Something went wrong. Please try again.'
+      error: 'Something went wrong. Please try again.',
+      layout: 'main',
+      showNav: false
     });
   }
 });
