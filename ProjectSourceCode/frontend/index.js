@@ -59,9 +59,9 @@ app.set('views', path.join(__dirname, 'views/pages')); // This points to the 'pa
 app.use(express.urlencoded({ extended: true })); // Parse form data
 app.use(express.json()); // Allow JSON body parsing
 
-// Route to render testing.hbs
+//change it so it shows the login screen first
 app.get('/', (req, res) => {
-  res.render('testing', { response: null }); // Pass empty response initially
+  res.render('login', { title: 'login', layout: 'main', showNav: false }); // Pass empty response initially
 });
 
 
@@ -85,7 +85,7 @@ app.get('/home', (req, res) => {
     });
   }
 
-  res.render('home', { title: 'Home' });
+  res.render('home', { title: 'Home', layout: 'main', showNav: true });
 });
 
 
@@ -98,7 +98,7 @@ app.get('/hobbies', (req, res) => {
     });
   }
 
-  res.render('hobbies', { title: 'Hobbies and Interests' });
+  res.render('hobbies', { title: 'Hobbies and Interests', layout: 'main', showNav: true });
 });
 
 
@@ -111,7 +111,7 @@ app.get('/rate-my-professor', (req, res) => {
     });
   }
 
-  res.render('rate-my-professor', { title: 'Rate My Professor' });
+  res.render('rate-my-professor', { title: 'Rate My Professor', layout: 'main', showNav: true });
 });
 
 
@@ -180,7 +180,7 @@ app.get('/welcome', (req, res) => {
 
 //get and post request for register page from the login page
 app.get('/register', (req, res) => {
-  res.render('register');
+  res.render('register', { title: 'Register', layout: 'main', showNav: true });
 });
 
 // Route to handle registration form submission (POST request)
