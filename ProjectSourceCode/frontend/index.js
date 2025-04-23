@@ -62,7 +62,7 @@ app.use(express.json()); // Allow JSON body parsing
 
 //change it so it shows the login screen first
 app.get('/', (req, res) => {
-  res.render('login', {title: 'login', formaat: 'main', showNav: false }); // Pass empty response initially
+  res.render('login', { title: 'login', formaat: 'main', showNav: false }); // Pass empty response initially
 });
 
 
@@ -266,7 +266,110 @@ app.get('/calendar', (req, res) => {
   res.render('calendar', { title: 'calendar' });
 });
 
-//get request for the login page just to test
+//testing
+app.get('/welcome', (req, res) => {
+  res.json({ status: 'success', message: 'Welcome!' });
+});
+
+//get and post request for register page from the login page
+// GET register
+app.get('/register', (req, res) => {
+  res.render('register', { title: 'Register', layout: 'main', showNav: false });
+});
+
+// POST register
+app.post('/register', async (req, res) => {
+  let {
+    student_id,
+    fullName,
+    email,
+    password,
+    year,
+    major,
+    degree,
+    minor
+  } = req.body;
+
+  // Convert student_id to integer
+  student_id = parseInt(student_id, 10);
+  if (isNaN(student_id)) {
+    return res.status(400).render('register', {
+      error: 'Student ID must be a number.',
+      layout: 'main',
+      showNav: false
+    });
+  }
+
+  console.log('Register body:', req.body);
+
+  if (
+    !student_id ||
+    !fullName ||
+    !email || !validator.isEmail(email) ||
+    !password || password.length < 6 ||
+    !year || !major || !degree
+  ) {
+    return res.status(400).render('register', {
+      error: 'Please fill out all required fields correctly.',
+      layout: 'main',
+      showNav: false
+    });
+  }
+
+  try {
+    const existing = await db.oneOrNone('SELECT 1 FROM students WHERE student_id = $1', [student_id]);
+    if (existing) {
+      return res.status(400).render('register', {
+        error: 'A student with that ID already exists.',
+        layout: 'main',
+        showNav: false
+      });
+    }
+
+    const validDegree = await db.oneOrNone(
+      'SELECT 1 FROM degrees WHERE major = $1 AND degreeName = $2',
+      [major, degree]
+    );
+    if (!validDegree) {
+      return res.status(400).render('register', {
+        error: 'Selected degree does not exist for this major.',
+        layout: 'main',
+        showNav: false
+      });
+    }
+
+    if (minor) {
+      const validMinor = await db.oneOrNone('SELECT 1 FROM minors WHERE minor = $1', [minor]);
+      if (!validMinor) {
+        return res.status(400).render('register', {
+          error: 'Selected minor does not exist.',
+          layout: 'main',
+          showNav: false
+        });
+      }
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    await db.none(
+      `INSERT INTO students (
+        student_id, fullName, email, year, major, degree, minor, password
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+      [student_id, fullName, email, year, major, degree, minor || null, hashedPassword]
+    );
+
+    console.log(`✅ Registered student: ${student_id}`);
+    res.redirect('/login');
+  } catch (error) {
+    console.error("❌ Registration error:", error);
+    res.status(500).render('register', {
+      error: 'Something went wrong. Please try again.',
+      layout: 'main',
+      showNav: false
+    });
+  }
+});
+
+// GET login
 app.get('/login', (req, res) => {
   if (req.session.user) {
     return res.render('home', {
@@ -278,10 +381,16 @@ app.get('/login', (req, res) => {
   res.render('login');
 });
 
-//post request
+// POST login
 app.post('/login', async (req, res) => {
-  const { student_id, password } = req.body;
+  let { student_id, password } = req.body;
+  student_id = parseInt(student_id, 10);
+
   console.log('Login attempt:', student_id, password);
+
+  if (isNaN(student_id)) {
+    return res.render('login', { error: 'Student ID must be a number' });
+  }
 
   try {
     const user = await db.oneOrNone('SELECT * FROM students WHERE student_id = $1', [student_id]);
@@ -289,102 +398,16 @@ app.post('/login', async (req, res) => {
     if (user && await bcrypt.compare(password, user.password)) {
       req.session.user = user;
       res.redirect('/home');
-    }
-    else {
+    } else {
       res.render('login', { error: 'Invalid username or password' });
     }
-  }
-  catch (error) {
+  } catch (error) {
     console.error('Error during login:', error);
     res.render('login', { error: 'Something went wrong. Please try again.' });
   }
 });
 
-//testing
-app.get('/welcome', (req, res) => {
-  res.json({ status: 'success', message: 'Welcome!' });
-});
 
-//get and post request for register page from the login page
-app.get('/register', (req, res) => {
-  res.render('register', { title: 'Register', layout: 'main', showNav: false });
-});
-
-// Route to handle registration form submission (POST request)
-app.post('/register', async (req, res) => {
-  const {
-    student_id,
-    fullName,
-    email,
-    password,
-    year,
-    major,
-    degree,
-    minor
-  } = req.body;
-  console.log('Register body:', req.body);
-  if (
-    !student_id ||
-    !fullName ||
-    !email ||
-    !validator.isEmail(email) ||
-    !password ||
-    password.length < 6 ||
-    !year ||
-    !major ||
-    !degree
-  ) {
-    return res.status(400).render('register', 
-      {
-      error: 'Please fill out all required fields correctly.',
-      layout: 'main',
-      showNav: false
-    });
-  }
-  try {
-    const validDegree = await db.oneOrNone(
-      'SELECT 1 FROM degrees WHERE major = $1 AND degreeName = $2',
-      [major, degree]
-    ); if (!validDegree) {
-      return res.status(400).render('register', {
-        error: 'Selected degree does not exist for this major.',
-        layout: 'main',
-        showNav: false
-      });
-    } if (minor) {
-      const validMinor = await db.oneOrNone(
-        'SELECT 1 FROM minors WHERE minor = $1',
-        [minor]
-      ); if (!validMinor) {
-        return res.status(400).render('register', {
-          error: 'Selected minor does not exist.',
-          layout: 'main',
-          showNav: false
-        });
-      }
-    }
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-    console.log('Hashed password:', hashedPassword); // should start with $2a$ or $2b$
-    console.log('Registered user with student_id:', student_id);
-    const testUser = await db.oneOrNone('SELECT * FROM students WHERE student_id = $1', [student_id]);
-    console.log('After register, found test user:', testUser);
-
-    await db.none(
-      `INSERT INTO students (
-        student_id, fullName, email, year, major, degree, minor, password
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
-      [student_id, fullName, email, year, major, degree, minor || null, hashedPassword]
-    ); res.redirect('/login');
-  } catch (error) {
-    console.error("Registration error:", error);
-    res.status(500).render('register', {
-      error: 'Something went wrong. Please try again.',
-      layout: 'main',
-      showNav: false
-    });
-  }
-});
 
 
 app.get('/advisor', (req, res) => {
@@ -406,15 +429,15 @@ app.use(express.json());
 
 app.post('/stream', async (req, res) => {
   const { prompt } = req.body;
-const student = req.session.user;
+  const student = req.session.user;
 
-let studentInfo = '';
-let formattedReqs = 'Degree requirements could not be loaded.';
-let courseListText = 'No courses added.';
-let hobbyListText = 'No hobbies listed.';
+  let studentInfo = '';
+  let formattedReqs = 'Degree requirements could not be loaded.';
+  let courseListText = 'No courses added.';
+  let hobbyListText = 'No hobbies listed.';
 
-try {
-  const result = await db.one(`
+  try {
+    const result = await db.one(`
     SELECT 
       s.fullName, s.email, s.year, s.major, s.degree, s.minor,
       d.reqs, d.totalCreditHours, d.electives, d.UpperDivisonCreds, d.hasMinor
@@ -423,45 +446,45 @@ try {
     WHERE s.student_id = $1
   `, [student.student_id]);
 
-  const requirements = Array.isArray(result.reqs) ? result.reqs : JSON.parse(result.reqs);
-  const allCourses = await db.any('SELECT course_id, course_name FROM courses');
-  const courseMap = Object.fromEntries(allCourses.map(c => [c.course_id, c.course_name]));
+    const requirements = Array.isArray(result.reqs) ? result.reqs : JSON.parse(result.reqs);
+    const allCourses = await db.any('SELECT course_id, course_name FROM courses');
+    const courseMap = Object.fromEntries(allCourses.map(c => [c.course_id, c.course_name]));
 
-  // Get courses
-  const takenCourses = await db.any(`
+    // Get courses
+    const takenCourses = await db.any(`
     SELECT c.course_id, c.course_name
     FROM student_courses sc
     JOIN courses c ON sc.course_id = c.course_id
     WHERE sc.student_id = $1
   `, [student.student_id]);
 
-  if (takenCourses.length > 0) {
-    courseListText = takenCourses.map(c => `- ${c.course_id}: ${c.course_name}`).join('\n');
-  }
+    if (takenCourses.length > 0) {
+      courseListText = takenCourses.map(c => `- ${c.course_id}: ${c.course_name}`).join('\n');
+    }
 
-  // Get hobbies
-  const hobbies = await db.any(`
+    // Get hobbies
+    const hobbies = await db.any(`
     SELECT hobby FROM student_hobbies WHERE student_id = $1
   `, [student.student_id]);
 
-  if (hobbies.length > 0) {
-    hobbyListText = hobbies.map(h => `- ${h.hobby}`).join('\n');
-  }
-
-  formattedReqs = requirements.map((req, i) => {
-    if (Array.isArray(req)) {
-      const options = req.map(code => {
-        const title = courseMap[code] || 'UNKNOWN';
-        return `${code}: ${title}`;
-      });
-      return `Requirement ${i + 1}: ONE OF → ${options.join(', ')}`;
-    } else {
-      const title = courseMap[req] || 'UNKNOWN';
-      return `Requirement ${i + 1}: ${req}: ${title}`;
+    if (hobbies.length > 0) {
+      hobbyListText = hobbies.map(h => `- ${h.hobby}`).join('\n');
     }
-  }).join('\n');
 
-  studentInfo = `
+    formattedReqs = requirements.map((req, i) => {
+      if (Array.isArray(req)) {
+        const options = req.map(code => {
+          const title = courseMap[code] || 'UNKNOWN';
+          return `${code}: ${title}`;
+        });
+        return `Requirement ${i + 1}: ONE OF → ${options.join(', ')}`;
+      } else {
+        const title = courseMap[req] || 'UNKNOWN';
+        return `Requirement ${i + 1}: ${req}: ${title}`;
+      }
+    }).join('\n');
+
+    studentInfo = `
 STUDENT PROFILE
 ---------------
 Name: ${result.fullName}
@@ -493,15 +516,15 @@ HOBBIES & INTERESTS
 ${hobbyListText}
 `;
 
-} catch (err) {
-  console.error('Failed to fetch student data:', err);
-  studentInfo = "The student's data could not be retrieved.";
-}
+  } catch (err) {
+    console.error('Failed to fetch student data:', err);
+    studentInfo = "The student's data could not be retrieved.";
+  }
 
-const chatHistory = [
-  {
-    role: 'system',
-    content: `
+  const chatHistory = [
+    {
+      role: 'system',
+      content: `
 You are a helpful college advisor AI assistant.
 
 The student is already authenticated. You are allowed to reference their profile.
@@ -525,12 +548,12 @@ Degree requirements format:
 
 Respond thoughtfully. Begin below.
     `
-  },
-  {
-    role: 'user',
-    content: prompt
-  }
-];
+    },
+    {
+      role: 'user',
+      content: prompt
+    }
+  ];
 
 
   const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
