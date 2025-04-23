@@ -146,7 +146,7 @@ app.get('/hobbies', (req, res) => {
 //rate my professor and map get and post here
 // GET map.html
 app.get('/map', (req, res) => {
-  res.sendFile(__dirname + '/frontend/views/pages/map.html');
+  res.sendFile(path.join(__dirname, 'app', 'map.html'));
 });
 
 // POST map.html (example form submission)
@@ -157,7 +157,7 @@ app.post('/map', (req, res) => {
 
 // GET rmp.html
 app.get('/rmp', (req, res) => {
-  res.sendFile(__dirname + '/frontend/views/pages/rmp.html');
+  res.sendFile(path.join(__dirname, 'app', 'rmp.html'));
 });
 
 // POST rmp.html (example form submission)
