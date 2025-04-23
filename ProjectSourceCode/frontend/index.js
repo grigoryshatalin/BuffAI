@@ -373,6 +373,19 @@ app.post('/register', async (req, res) => {
   }
 });
 
+
+app.get('/advisor', (req, res) => {
+  if (!req.session.user) {
+    return res.redirect('/login');
+  }
+
+  res.render('advisor', {
+    title: 'AI Advisor',
+    layout: 'main',
+    showNav: true
+  });
+});
+
 // Route to interact with Ollama
 let chatHistory = []; // per session — in-memory (could be user/session based)
 
