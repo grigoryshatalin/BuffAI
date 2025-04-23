@@ -67,17 +67,6 @@ app.get('/', (req, res) => {
 
 // route to render home.hbs
 app.get('/home', async (req, res) => {
-  //queries
-  //db.any(all_students, [req.session.user.student_id])
-  //.then(courses => {
-  //  console.log(courses)
-  //  res.render('pages/courses', {
-  //  email: user.email,
-  //  courses,
-  //  action: req.query.taken ? 'delete' : 'add',
-  // });
-
-  //  })
   if (!req.session.user) {
     return res.render('login', {
       title: 'Login',
@@ -90,21 +79,27 @@ app.get('/home', async (req, res) => {
   const message = req.query.message;
 
   let courses = [];
+  let hobbies = [];
 
   if (student) {
     try {
-      courses =  await db.any(`
+      courses = await db.any(`
         SELECT c.course_id, c.course_name
         FROM student_courses sc
         JOIN courses c ON sc.course_id = c.course_id
         WHERE sc.student_id = $1
       `, [student.student_id]);
+
+      hobbies = await db.any(`
+        SELECT hobby FROM student_hobbies WHERE student_id = $1
+      `, [student.student_id]);
+
     } catch (err) {
-      console.error('Error fetching student courses:', err);
+      console.error('Error loading student info:', err);
     }
   }
 
-  res.render('home', { title: 'Home', added, message, courses });
+  res.render('home', { title: 'Home', added, message, courses, hobbies });
 });
 
 app.post('/remove-class', async (req, res) => {
@@ -181,6 +176,45 @@ app.post('/add-class', async (req, res) => {
   } catch (err) {
     console.error('Error adding class:', err);
     res.redirect('/home?message=Something%20went%20wrong');
+  }
+});
+
+// Add hobby
+app.post('/add-hobby', async (req, res) => {
+  const student = req.session.user;
+  const { hobby } = req.body;
+
+  if (!student || !hobby) return res.redirect('/home?message=Missing+info');
+
+  try {
+    await db.none(`
+      INSERT INTO student_hobbies (student_id, hobby)
+      VALUES ($1, $2)
+      ON CONFLICT DO NOTHING
+    `, [student.student_id, hobby]);
+    res.redirect(`/home?added=${encodeURIComponent(hobby)}`);
+  } catch (err) {
+    console.error('Error adding hobby:', err);
+    res.redirect('/home?message=Could+not+add+hobby');
+  }
+});
+
+// Remove hobby
+app.post('/remove-hobby', async (req, res) => {
+  const student = req.session.user;
+  const { hobby } = req.body;
+
+  if (!student || !hobby) return res.redirect('/home?message=Missing+info');
+
+  try {
+    await db.none(
+      `DELETE FROM student_hobbies WHERE student_id = $1 AND hobby = $2`,
+      [student.student_id, hobby]
+    );
+    res.redirect('/home?message=Removed+hobby');
+  } catch (err) {
+    console.error('Failed to remove hobby:', err);
+    res.redirect('/home?message=Error+removing+hobby');
   }
 });
 
@@ -328,52 +362,62 @@ app.use(express.json());
 
 app.post('/stream', async (req, res) => {
   const { prompt } = req.body;
-  const student = req.session.user;
+const student = req.session.user;
 
-  let studentInfo = '';
-  let formattedReqs = 'Degree requirements could not be loaded.';
-  let courseListText = 'No courses added.';
+let studentInfo = '';
+let formattedReqs = 'Degree requirements could not be loaded.';
+let courseListText = 'No courses added.';
+let hobbyListText = 'No hobbies listed.';
 
-  try {
-    const result = await db.one(`
-      SELECT 
-        s.fullName, s.email, s.year, s.major, s.degree, s.minor,
-        d.reqs, d.totalCreditHours, d.electives, d.UpperDivisonCreds, d.hasMinor
-      FROM students s
-      JOIN degrees d ON s.major = d.major AND s.degree = d.degreeName
-      WHERE s.student_id = $1
-    `, [student.student_id]);
+try {
+  const result = await db.one(`
+    SELECT 
+      s.fullName, s.email, s.year, s.major, s.degree, s.minor,
+      d.reqs, d.totalCreditHours, d.electives, d.UpperDivisonCreds, d.hasMinor
+    FROM students s
+    JOIN degrees d ON s.major = d.major AND s.degree = d.degreeName
+    WHERE s.student_id = $1
+  `, [student.student_id]);
 
-    const requirements = Array.isArray(result.reqs) ? result.reqs : JSON.parse(result.reqs);
-    const allCourses = await db.any('SELECT course_id, course_name FROM courses');
-    const courseMap = Object.fromEntries(allCourses.map(c => [c.course_id, c.course_name]));
+  const requirements = Array.isArray(result.reqs) ? result.reqs : JSON.parse(result.reqs);
+  const allCourses = await db.any('SELECT course_id, course_name FROM courses');
+  const courseMap = Object.fromEntries(allCourses.map(c => [c.course_id, c.course_name]));
 
-    // Get current courses taken by the student
-    const takenCourses = await db.any(`
-      SELECT c.course_id, c.course_name
-      FROM student_courses sc
-      JOIN courses c ON sc.course_id = c.course_id
-      WHERE sc.student_id = $1
-    `, [student.student_id]);
+  // Get courses
+  const takenCourses = await db.any(`
+    SELECT c.course_id, c.course_name
+    FROM student_courses sc
+    JOIN courses c ON sc.course_id = c.course_id
+    WHERE sc.student_id = $1
+  `, [student.student_id]);
 
-    if (takenCourses.length > 0) {
-      courseListText = takenCourses.map(c => `- ${c.course_id}: ${c.course_name}`).join('\n');
+  if (takenCourses.length > 0) {
+    courseListText = takenCourses.map(c => `- ${c.course_id}: ${c.course_name}`).join('\n');
+  }
+
+  // Get hobbies
+  const hobbies = await db.any(`
+    SELECT hobby FROM student_hobbies WHERE student_id = $1
+  `, [student.student_id]);
+
+  if (hobbies.length > 0) {
+    hobbyListText = hobbies.map(h => `- ${h.hobby}`).join('\n');
+  }
+
+  formattedReqs = requirements.map((req, i) => {
+    if (Array.isArray(req)) {
+      const options = req.map(code => {
+        const title = courseMap[code] || 'UNKNOWN';
+        return `${code}: ${title}`;
+      });
+      return `Requirement ${i + 1}: ONE OF → ${options.join(', ')}`;
+    } else {
+      const title = courseMap[req] || 'UNKNOWN';
+      return `Requirement ${i + 1}: ${req}: ${title}`;
     }
+  }).join('\n');
 
-    formattedReqs = requirements.map((req, i) => {
-      if (Array.isArray(req)) {
-        const options = req.map(code => {
-          const title = courseMap[code] || 'UNKNOWN';
-          return `${code}: ${title}`;
-        });
-        return `Requirement ${i + 1}: ONE OF → ${options.join(', ')}`;
-      } else {
-        const title = courseMap[req] || 'UNKNOWN';
-        return `Requirement ${i + 1}: ${req}: ${title}`;
-      }
-    }).join('\n');
-
-    studentInfo = `
+  studentInfo = `
 STUDENT PROFILE
 ---------------
 Name: ${result.fullName}
@@ -399,17 +443,21 @@ ${formattedReqs}
 CURRENTLY ADDED COURSES
 -----------------------
 ${courseListText}
+
+HOBBIES & INTERESTS
+-------------------
+${hobbyListText}
 `;
 
-  } catch (err) {
-    console.error('Failed to fetch student data:', err);
-    studentInfo = "The student's data could not be retrieved.";
-  }
+} catch (err) {
+  console.error('Failed to fetch student data:', err);
+  studentInfo = "The student's data could not be retrieved.";
+}
 
-  const chatHistory = [
-    {
-      role: 'system',
-      content: `
+const chatHistory = [
+  {
+    role: 'system',
+    content: `
 You are a helpful college advisor AI assistant.
 
 The student is already authenticated. You are allowed to reference their profile.
@@ -418,28 +466,27 @@ Here is their profile:
 
 ${studentInfo}
 
-You may directly answer questions like "what is my major" or "do I have a minor?".
+You may directly answer questions like "what is my major", "what classes have I taken", or "what are my hobbies?".
 Do not say you cannot access their data.
 
 ⚠️ Important Instructions:
-- You are explicitly allowed to refer to the student's name, email, major, year, degree, minor, current coursework, and requirements.
-- If the user asks questions like "what is my major" or "what courses have I taken?", answer directly from the provided data.
-- Do NOT respond with "I cannot access that" or "I don't know your personal info." You already have it.
-- If a field is missing or null (e.g., no minor), respond accordingly (e.g., "You have no minor declared").
+- You are explicitly allowed to refer to the student's name, email, major, year, degree, minor, courses, hobbies, and requirements.
+- If the user asks questions like "what are my interests?" or "what are my current classes?", respond from the provided data.
+- Do NOT say \"I don’t know your profile\" — you already have it.
+- If a field is missing or null (e.g., no minor), respond accordingly.
 
 Degree requirements format:
-- Outer list = **AND** conditions (all must be satisfied).
-- Inner list = **OR** choices (choose one).
+- Outer list = **AND** conditions
+- Inner list = **OR** options
 
-Do not list every requirement unless asked.
-Begin responding to the user’s question below.
-      `
-    },
-    {
-      role: 'user',
-      content: prompt
-    }
-  ];
+Respond thoughtfully. Begin below.
+    `
+  },
+  {
+    role: 'user',
+    content: prompt
+  }
+];
 
 
   const timestamp = new Date().toISOString().replace(/[:.]/g, '-');

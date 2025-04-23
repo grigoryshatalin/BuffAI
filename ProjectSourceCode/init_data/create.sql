@@ -47,9 +47,16 @@ CREATE TABLE courses(
   specific_major VARCHAR(100) NULL
 );
 
-CREATE TABLE student_courses(
+CREATE TABLE student_courses (
   course_id VARCHAR(20) NOT NULL REFERENCES courses (course_id),
-  student_id INTEGER NOT NULL REFERENCES students (student_id)
+  student_id INTEGER NOT NULL REFERENCES students (student_id),
+  PRIMARY KEY (student_id, course_id)
+);
+
+CREATE TABLE student_hobbies (
+  hobby TEXT NOT NULL,
+  student_id INTEGER NOT NULL REFERENCES students(student_id),
+  PRIMARY KEY (student_id, hobby)
 );
 
 CREATE TABLE prerequisites(
