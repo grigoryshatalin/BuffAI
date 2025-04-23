@@ -56,7 +56,7 @@ app.set('view engine', 'hbs');
 app.set('views', path.join(__dirname, 'views/pages')); // This points to the 'pages' folder
 
 // Middleware setup
-app.use('/static', express.static(__dirname + '/frontend/app'));
+app.use(express.static(path.join(__dirname, 'app')));
 app.use(express.urlencoded({ extended: true })); // Parse form data
 app.use(express.json()); // Allow JSON body parsing
 
