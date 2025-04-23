@@ -80,7 +80,7 @@ function calculateRoute() {
 
         const route = result.routes[0].legs[0];
         document.getElementById("distance-info").innerHTML =
-          `<img src="https://img.icons8.com/ios-filled/50/000000/footprints.png" alt="walking icon" />` +
+          `<img src="https://ih1.redbubble.net/image.1367622357.5161/st,small,507x507-pad,600x600,f8f8f8.jpg" alt="walking icon" />` +
           `Walking Distance: ${route.distance.text}, Duration: ${route.duration.text}`;
       } else {
         alert("Route search failed: " + status);
@@ -103,7 +103,7 @@ function showRoute(start, end) {
         const route = result.routes[0].legs[0];
 
         document.getElementById("distance-info").innerHTML =
-          `<img src="https://img.icons8.com/ios-filled/50/000000/footprints.png" alt="walking icon" />` +
+          `<img src="https://ih1.redbubble.net/image.1367622357.5161/st,small,507x507-pad,600x600,f8f8f8.jpg" />` +
           `Walking Distance: ${route.distance.text}, Duration: ${route.duration.text}`;
       } else {
         console.error("Route calculation failed: " + status);
@@ -129,5 +129,5 @@ function clearTempMarkers() {
   origin = null;
   destination = null;
   directionsRenderer.setDirections({ routes: [] });
-  document.getElementById("distance-info").innerText = "";
+  document.getElementById("distance-text").innerText = "";
 }
