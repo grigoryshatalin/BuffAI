@@ -4,6 +4,7 @@ DROP TABLE IF EXISTS students;
 DROP TABLE IF EXISTS courses;
 DROP TABLE IF EXISTS minors;
 DROP TABLE IF EXISTS degrees;
+DROP TABLE IF EXISTS student_hobbies;
 
 
 CREATE TABLE degrees(
