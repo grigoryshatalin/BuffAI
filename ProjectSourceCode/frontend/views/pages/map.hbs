@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>UC Boulder Map</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background-color: #fff;
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    h2 {
+      color: #bfa133;
+      text-align: center;
+      margin-top: 30px;
+      font-size: 2.8rem;
+      font-weight: 600;
+    }
+
+    #inputs {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin: 20px;
+    }
+
+    input[type="text"] {
+      border-radius: 10px;
+      padding: 12px;
+      font-size: 1.1rem;
+      border: 2px solid #ccc;
+      background-color: #fff;
+      color: #000;
+    }
+
+    input::placeholder {
+      color: #aaa;
+    }
+
+    button {
+      background-color: #000;
+      color: gold;
+      border: 2px solid gold;
+      font-weight: 600;
+      padding: 12px 20px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    button:hover {
+      background-color: gold;
+      color: #000;
+    }
+
+    #map {
+      height: 1000px;
+      width: 100%;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Map ver 1.1a</h2>
+
+  <div id="inputs">
+    <input id="start" type="text" placeholder="Search start location" />
+    <input id="end" type="text" placeholder="Search end location" />
+    <button onclick="calculateRoute()">Route Search</button>
+    <button onclick="clearTempMarkers()">Clear Markers</button>
+  </div>
+
+  <div id="map"></div>
+
+  <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDtcNYhjR1p0C6GyIcJo8hgfjH8dbBFECo&libraries=places&callback=initMap"
+    async
+    defer
+  ></script>
+  <script src="/static/maps.js"></script>
+</body>
+</html>
