@@ -56,6 +56,7 @@ app.set('view engine', 'hbs');
 app.set('views', path.join(__dirname, 'views/pages')); // This points to the 'pages' folder
 
 // Middleware setup
+app.use('/static', express.static(__dirname + '/frontend/app'));
 app.use(express.urlencoded({ extended: true })); // Parse form data
 app.use(express.json()); // Allow JSON body parsing
 
@@ -142,17 +143,29 @@ app.get('/hobbies', (req, res) => {
 });
 
 
-app.get('/rate-my-professor', (req, res) => {
-
-  if (!req.session.user) {
-    return res.render('login', {
-      title: 'Login',
-      message: 'You are not logged in!'
-    });
-  }
-
-  res.render('rate-my-professor', { title: 'Rate My Professor', layout: 'main', showNav: true });
+//rate my professor and map get and post here
+// GET map.html
+app.get('/map', (req, res) => {
+  res.sendFile(__dirname + '/frontend/views/pages/map.html');
 });
+
+// POST map.html (example form submission)
+app.post('/map', (req, res) => {
+  // handle form data or actions here
+  res.send('Map POST received');
+});
+
+// GET rmp.html
+app.get('/rmp', (req, res) => {
+  res.sendFile(__dirname + '/frontend/views/pages/rmp.html');
+});
+
+// POST rmp.html (example form submission)
+app.post('/rmp', (req, res) => {
+  // handle form data or actions here
+  res.send('RMP POST received');
+});
+
 
 app.post('/add-class', async (req, res) => {
   const student = req.session.user;
