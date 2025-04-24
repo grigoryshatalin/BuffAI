@@ -30,6 +30,29 @@ const hbs = handlebars.create({
   partialsDir: path.join(__dirname, 'views/partials'),
 });
 
+// Filter courses by year
+hbs.handlebars.registerHelper('filterCourses', function(courses, year) {
+  return courses.filter(course => course.year === year);
+});
+
+// Capitalize first letter
+hbs.handlebars.registerHelper('capitalize', function(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+});
+
+// Allow temporary binding (like `let`)
+hbs.handlebars.registerHelper('let', function(value, options) {
+  return options.fn(value);
+});
+
+hbs.handlebars.registerHelper('eq', function (a, b) {
+  return a === b;
+});
+
+hbs.handlebars.registerHelper('array', function (...args) {
+  return args.slice(0, -1);
+});
+
 // Database connection config
 const dbConfig = {
   host: process.env.DB_HOST || 'db', // Use 'db' for Docker Compose
@@ -79,10 +102,18 @@ app.get('/home', async (req, res) => {
   const student = req.session.user;
   const added = req.query.added;
   const message = req.query.message;
+  const yearLabels = ['freshman', 'sophomore', 'junior', 'senior'];
+
 
   let courses = [];
   let hobbies = [];
   let studentYear = '';
+  let coursesByYear = {
+    freshman: [],
+    sophomore: [],
+    junior: [],
+    senior: [],
+  };
 
   try {
     // Query for courses
@@ -93,12 +124,32 @@ app.get('/home', async (req, res) => {
       WHERE sc.student_id = $1
     `, [student.student_id]);
 
+    // Organize courses by year
+    courses.forEach(course => {
+      switch (course.year) {
+        case 'freshman':
+          coursesByYear.freshman.push(course);
+          break;
+        case 'sophomore':
+          coursesByYear.sophomore.push(course);
+          break;
+        case 'junior':
+          coursesByYear.junior.push(course);
+          break;
+        case 'senior':
+          coursesByYear.senior.push(course);
+          break;
+        default:
+          break;
+      }
+    });
+
     // Query for hobbies
     hobbies = await db.any(`
       SELECT hobby FROM student_hobbies WHERE student_id = $1
     `, [student.student_id]);
 
-    // Query for students year from the students table
+    // Query for student's year from the students table
     const studentResult = await db.one(`
       SELECT year FROM students WHERE student_id = $1
     `, [student.student_id]);
@@ -109,19 +160,19 @@ app.get('/home', async (req, res) => {
     console.error('Error loading student info:', err);
   }
 
+  // Render the home page with courses organized by year
   res.render('home', {
     title: 'Home',
     added,
     message,
-    courses,
+    coursesByYear,
+    yearLabels,  // Passing the courses grouped by year
     hobbies,
     studentYear,
     layout: 'main',
     showNav: true
   });
 });
-
-
 app.post('/remove-class', async (req, res) => {
   const student = req.session.user;
   const { course_id } = req.body;
@@ -183,25 +234,19 @@ app.post('/rmp', (req, res) => {
 
 app.post('/add-class', async (req, res) => {
   const student = req.session.user;
-  const { course_id } = req.body;
-  const { year } = req.body;
-  console.log(year)
+  const { course_id, year } = req.body;
 
   if (!student || !course_id) {
     return res.redirect('/home?message=Missing%20student%20or%20course%20ID');
   }
 
   try {
-    // Validate course
     const course = await db.oneOrNone('SELECT course_id FROM courses WHERE course_id = $1', [course_id]);
 
     if (!course) {
       return res.redirect('/home?message=Invalid%20course%20code');
     }
 
-   
-
-    // Insert only if not already taken
     await db.none(`
       INSERT INTO student_courses (course_id, student_id, year)
       VALUES ($1, $2, $3)
@@ -209,7 +254,6 @@ app.post('/add-class', async (req, res) => {
     `, [course_id, student.student_id, year]);
 
     res.redirect(`/home?added=${encodeURIComponent(course_id)}`);
-
   } catch (err) {
     console.error('Error adding class:', err);
     res.redirect('/home?message=Something%20went%20wrong');
