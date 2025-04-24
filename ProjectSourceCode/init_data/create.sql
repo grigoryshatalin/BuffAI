@@ -51,6 +51,7 @@ CREATE TABLE courses(
 CREATE TABLE student_courses (
   course_id VARCHAR(20) NOT NULL REFERENCES courses (course_id),
   student_id INTEGER NOT NULL REFERENCES students (student_id),
+  year VARCHAR(15);
   PRIMARY KEY (student_id, course_id)
 );
 
