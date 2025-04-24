@@ -60,7 +60,6 @@ app.use(express.static(path.join(__dirname, 'app')));
 app.use(express.urlencoded({ extended: true })); // Parse form data
 app.use(express.json()); // Allow JSON body parsing
 
-
 //change it so it shows the login screen first
 app.get('/', (req, res) => {
   res.render('login', { title: 'login', formaat: 'main', showNav: false }); // Pass empty response initially
@@ -85,7 +84,7 @@ app.get('/home', async (req, res) => {
 
   try {
     courses = await db.any(`
-      SELECT c.course_id, c.course_name, sc.year
+      SELECT c.course_id, c.course_name
       FROM student_courses sc
       JOIN courses c ON sc.course_id = c.course_id
       WHERE sc.student_id = $1
@@ -98,7 +97,6 @@ app.get('/home', async (req, res) => {
   } catch (err) {
     console.error('Error loading student info:', err);
   }
-  console.log(courses)
 
   res.render('home', {
     title: 'Home',
@@ -174,8 +172,6 @@ app.post('/rmp', (req, res) => {
 app.post('/add-class', async (req, res) => {
   const student = req.session.user;
   const { course_id } = req.body;
-  const { year } = req.body;
-  console.log(year)
 
   if (!student || !course_id) {
     return res.redirect('/home?message=Missing%20student%20or%20course%20ID');
@@ -189,17 +185,14 @@ app.post('/add-class', async (req, res) => {
       return res.redirect('/home?message=Invalid%20course%20code');
     }
 
-   
-
     // Insert only if not already taken
     await db.none(`
-      INSERT INTO student_courses (course_id, student_id, year)
-      VALUES ($1, $2, $3)
+      INSERT INTO student_courses (course_id, student_id)
+      VALUES ($1, $2)
       ON CONFLICT DO NOTHING
-    `, [course_id, student.student_id, year]);
+    `, [course_id, student.student_id]);
 
     res.redirect(`/home?added=${encodeURIComponent(course_id)}`);
-
   } catch (err) {
     console.error('Error adding class:', err);
     res.redirect('/home?message=Something%20went%20wrong');
