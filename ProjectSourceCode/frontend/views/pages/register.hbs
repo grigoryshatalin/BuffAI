@@ -1,119 +1,109 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BuffAI Registration Form</title>
- 
+
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
-   <style>
+    <style>
+    body {
+      background-color: #ffffff;
+      font-family: 'Poppins', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 40px 15px;
+    }
 
-  body {
-    background-color: #fff;
-    font-family: 'Poppins', sans-serif;
-  }
+    .container {
+      max-width: 500px;
+      width: 100%;
+      background-color: rgba(255, 255, 255, 0.95);
+      padding: 25px 30px;
+      border-radius: 12px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    }
 
-  .container {
-    max-width: 500px;
-    margin-top: 50px;
-    background-color: rgba(255, 255, 255, 0.9); /* Slight transparency */
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3); /* Matching card shadow */
-  }
+    .header-img {
+      width: 68%;
+      height: auto;
+      border-radius: 12px 12px 0 0;
+      object-fit: cover;
+      display: block;
+      margin: 0 auto 15px;
+    }
 
-  .title {
-    color: #bfa133;
-    text-align: center;
-    margin-top: 30px;
-    font-size: 2.8rem;
-    font-weight: 600;
-  }
+    .form-heading {
+      color: #bfa133;
+      text-align: center;
+      font-size: 1.8rem;
+      font-weight: 600;
+      margin: 0px 0 20px;
+    }
 
-  .card {
-    margin-top: 30px;
-    border-radius: 12px;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-    background-color: #fff;
-  }
+    .form-label {
+      font-weight: 500;
+      color: #000;
+    }
 
-  .form-label {
-    font-weight: 500;
-    color: #000;
-  }
+    .btn-custom,
+    .btn-primary {
+      background-color: #000;
+      color: #bfa133;
+      border: 2px solid #c9b87aS;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      width: 100%;
+    }
 
-  .form-title {
-    color: #bfa133;
-    font-weight: 600;
-  }
+    .btn-custom:hover,
+    .btn-primary:hover {
+      background-color: #bfa133;
+      color: #000;
+      border-color: #bfa133;
+    }
 
-  .btn-custom,
-  .btn-primary {
-    background-color: #000;
-    color: gold;
-    border: 2px solid gold;
-    font-weight: 600;
-    transition: all 0.3s ease;
-  }
+    .form-select,
+    .form-control {
+      border-radius: 10px;
+      padding: 10px;
+      font-size: 1rem;
+      border: 2px solid #ccc;
+      background-color: #fff;
+      color: #000;
+    }
 
-  .btn-custom:hover,
-  .btn-primary:hover {
-    background-color: gold;
-    color: #000;
-    border-color: gold;
-  }
+    .form-select:focus,
+    .form-control:focus {
+      border-color: #bfa133;
+      box-shadow: 0 0 5px rgba(191, 161, 51, 0.8);
+    }
 
-  a {
-    color: #bfa133;
-    text-decoration: none;
-  }
+    .form-control::placeholder {
+      color: #aaa;
+    }
 
-  a:hover {
-    text-decoration: underline;
-  }
-
-  .form-select,
-  .form-control {
-    border-radius: 10px;
-    padding: 12px;
-    font-size: 1.1rem;
-    border: 2px solid #ccc;
-    background-color: #fff;
-    color: #000;
-  }
-
-  .form-select:focus,
-  .form-control:focus {
-    border-color: #bfa133;
-    box-shadow: 0 0 5px rgba(191, 161, 51, 0.8);
-  }
-
-  .form-control::placeholder {
-    color: #aaa;
-  }
-
-  .middle-img {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    z-index: -1;
-  }
-
-</style>
-
+    small {
+      color: #555;
+    }
+  </style>
 </head>
 
 <body>
-  <div class="container mt-5">
-    <h1 class="mb-4">BuffAI Student Registration</h1>
+  <div class="container">
+    <!-- Banner image at top -->
+    <img src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExdm1sOGl4b2Vtczd4eXN5MHR4ZTFhNmxicWN2cHBzb3pxYWRtczF2diZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/LqIrp8s1G3165JNOog/giphy.gif"
+      alt="BuffAI Banner" class="header-img">
+
+    <h2 class="form-heading">Student Registration</h2>
+
     <form action="/register" method="POST">
       <div class="mb-3">
         <label for="student_id" class="form-label">Student ID</label>
-        <input type="text" id="student_id" name="student_id" class="form-control" required>
+        <input type="number" id="student_id" name="student_id" class="form-control" required>
       </div>
 
       <div class="mb-3">
@@ -129,6 +119,7 @@
       <div class="mb-3">
         <label for="password" class="form-label">Password</label>
         <input type="password" id="password" name="password" class="form-control" required>
+        <small>Password must be at least 6 characters long</small>
       </div>
 
       <div class="mb-3">
@@ -142,7 +133,6 @@
           <option value="Graduate">Graduate</option>
         </select>
       </div>
-
       <div class="mb-3">
         <label for="degree" class="form-label">Degree</label>
         <select id="degree" name="degree" class="form-select" required>
@@ -151,7 +141,7 @@
           <option value="BS">BS</option>
         </select>
       </div>
-      
+
       <div class="mb-3">
         <label for="major" class="form-label">Major</label>
         <select id="major" name="major" class="form-select" required>
@@ -197,7 +187,8 @@
           <option value="Mechanical Engineering">Mechanical Engineering</option>
           <option value="Media Production">Media Production</option>
           <option value="Media Studies">Media Studies</option>
-          <option value="Molecular, Cellular and Developmental Biology">Molecular, Cellular and Developmental Biology</option>
+          <option value="Molecular, Cellular and Developmental Biology">Molecular, Cellular and Developmental Biology
+          </option>
           <option value="Music">Music</option>
           <option value="Neuroscience">Neuroscience</option>
           <option value="Philosophy">Philosophy</option>
@@ -226,7 +217,8 @@
           <option value="Art History (Minor)">Art History (Minor)</option>
           <option value="Art Practices (Minor)">Art Practices (Minor)</option>
           <option value="Asian Studies (Minor)">Asian Studies (Minor)</option>
-          <option value="Astrophysical and Planetary Sciences (Minor)">Astrophysical and Planetary Sciences (Minor)</option>
+          <option value="Astrophysical and Planetary Sciences (Minor)">Astrophysical and Planetary Sciences (Minor)
+          </option>
           <option value="Atmospheric and Oceanic Sciences (Minor)">Atmospheric and Oceanic Sciences (Minor)</option>
           <option value="Biochemistry (Minor)">Biochemistry (Minor)</option>
           <option value="Biomedical Engineering (Minor)">Biomedical Engineering (Minor)</option>
@@ -276,7 +268,8 @@
           <option value="Mathematics (Minor)">Mathematics (Minor)</option>
           <option value="Media Production (Minor)">Media Production (Minor)</option>
           <option value="Media Studies (Minor)">Media Studies (Minor)</option>
-          <option value="Molecular, Cellular and Developmental Biology (Minor)">Molecular, Cellular and Developmental Biology (Minor)</option>
+          <option value="Molecular, Cellular and Developmental Biology (Minor)">Molecular, Cellular and Developmental
+            Biology (Minor)</option>
           <option value="Music (Minor)">Music (Minor)</option>
           <option value="Nordic Studies (Minor)">Nordic Studies (Minor)</option>
           <option value="Philosophy (Minor)">Philosophy (Minor)</option>
@@ -285,46 +278,34 @@
           <option value="Portuguese (Minor)">Portuguese (Minor)</option>
           <option value="Quantum Engineering (Minor)">Quantum Engineering (Minor)</option>
           <option value="Religious Studies (Minor)">Religious Studies (Minor)</option>
-          <option value="Russian, East European and Eurasian Studies (Minor)">Russian, East European and Eurasian Studies (Minor)</option>
+          <option value="Russian, East European and Eurasian Studies (Minor)">Russian, East European and Eurasian
+            Studies (Minor)</option>
           <option value="Signals and Systems (Minor)">Signals and Systems (Minor)</option>
           <option value="Sociology (Minor)">Sociology (Minor)</option>
           <option value="Space (Minor)">Space (Minor)</option>
           <option value="Spanish (Minor)">Spanish (Minor)</option>
-          <option value="Speech, Language and Hearing Sciences (Minor)">Speech, Language and Hearing Sciences (Minor)</option>
+          <option value="Speech, Language and Hearing Sciences (Minor)">Speech, Language and Hearing Sciences (Minor)
+          </option>
           <option value="Sports Media (Minor)">Sports Media (Minor)</option>
           <option value="Statistics (Minor)">Statistics (Minor)</option>
-          <option value="Teaching English to Speakers of Other Languages (Minor)">Teaching English to Speakers of Other Languages (Minor)</option>
+          <option value="Teaching English to Speakers of Other Languages (Minor)">Teaching English to Speakers of Other
+            Languages (Minor)</option>
           <option value="Theatre (Minor)">Theatre (Minor)</option>
           <option value="Women and Gender Studies (Minor)">Women and Gender Studies (Minor)</option>
           <option value="Writing and Public Engagement (Minor)">Writing and Public Engagement (Minor)</option>
         </select>
       </div>
 
-<form id="redirectForm">
-  <!-- form fields here -->
-  <button type="submit" class="btn btn-custom w-100">Submit</button>
+      <button type="submit" class="btn btn-custom w-100">Submit</button>
 
-  <p class="form-label text-center mt-3">
-    Already have an account?
-  </p>
-  
-  <div class="d-grid">
-    <a href="/login" class="btn btn-custom">Login</a>
-  </div>
-</form>
+      <p class="form-label text-center mt-3">
+        Already have an account?
+      </p>
 
-
-  <img src="https://i.etsystatic.com/23898732/r/il/64a443/2988795473/il_570xN.2988795473_bw1b.jpg" alt="CU logo" class="middle-img" />
-
-<!-- submit button java script insert -->
-<script>
-  document.getElementById('redirectForm').addEventListener('submit', function (e) {
-    e.preventDefault(); // stop the form from submitting
-    window.location.href = '/login'; // redirect
-  });
-</script>
-
-
+      <div class="d-grid">
+        <a href="/login" class="btn btn-custom">Login</a>
+      </div>
 
 </body>
+
 </html>

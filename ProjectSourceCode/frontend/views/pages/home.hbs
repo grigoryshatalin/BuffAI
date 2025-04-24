@@ -1,58 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Progress + Calendar + Add Class</title>
+  <title>Dashboard</title>
   <style>
     body {
       margin: 0;
-      height: 100vh;
-      background-color: #f0f0f0;
-      font-family: sans-serif;
+      background-color: #f7f9fc;
+      font-family: 'Segoe UI', sans-serif;
     }
 
-    /* Circular Progress */
-    .circular-progress {
+    .alert {
       position: fixed;
-      top: 200px;
-      right: 200px;
-      width: 80px;
-      height: 80px;
+      top: 20px;
+      right: 20px;
+      z-index: 1000;
+      padding: 12px 18px;
+      border-radius: 6px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      font-size: 15px;
+      animation: fadein 0.4s ease;
     }
 
-    .circular-progress svg {
-      transform: rotate(-90deg);
+    .alert-success {
+      background: #d4edda;
+      color: #155724;
+      border-left: 5px solid #28a745;
     }
 
-    .circular-progress circle {
-      fill: none;
-      stroke-width: 10;
+    .alert-error {
+      background: #f8d7da;
+      color: #721c24;
+      border-left: 5px solid #dc3545;
     }
 
-    .circular-progress .bg {
-      stroke: #eee;
+    @keyframes fadein {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
-    .circular-progress .progress {
-      stroke: #3498db;
-      stroke-dasharray: 251.2;
-      stroke-dashoffset: calc(251.2 * (1 - 0.75)); /* 75% progress */
-      transition: stroke-dashoffset 0.5s ease;
-    }
-
-    .circular-progress .progress-text {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 16px;
-      font-weight: bold;
-      color: #3498db;
-      pointer-events: none;
-    }
-
-    /* Calendar Button */
     .calendar-button {
       position: fixed;
       bottom: 20px;
@@ -72,48 +66,158 @@
       background-color: #27ae60;
     }
 
-    /* Add Class Button */
-    .add-class-button {
-      position: fixed;
-      top: 50%;
-      left: 20px;
-      transform: translateY(-50%);
-      padding: 12px 16px;
-      background-color: #e67e22;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-size: 16px;
-      cursor: pointer;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-      transition: background-color 0.3s ease;
+    .dashboard-container {
+      max-width: 1000px;
+      margin: 40px auto;
+      background: white;
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.05);
     }
 
-    .add-class-button:hover {
-      background-color: #d35400;
+    .section {
+      margin-bottom: 40px;
+    }
+
+    .section h2 {
+      font-size: 28px;
+      margin-bottom: 20px;
+    }
+
+    .add-form {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .add-form input {
+      flex: 1;
+      padding: 10px 14px;
+      font-size: 15px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+    }
+
+    .add-form button {
+      background: #e67e22;
+      color: white;
+      font-weight: bold;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    .add-form button:hover {
+      background: #d35400;
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: #f8f9fb;
+      border-radius: 16px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.03);
+      overflow: hidden;
+      position: relative;
+      transition: transform 0.2s ease;
+      padding: 20px;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+    }
+
+    .card h3, .card p {
+      margin: 0;
+    }
+
+    .remove-form {
+      position: absolute;
+      top: 10px;
+      right: 12px;
+    }
+
+    .remove-form button {
+      background: none;
+      border: none;
+      font-size: 18px;
+      color: #e74c3c;
+      cursor: pointer;
+    }
+
+    .remove-form button:hover {
+      color: #c0392b;
     }
   </style>
 </head>
+
 <body>
-
-  <!-- Circular Progress Bar -->
-  <div class="circular-progress">
-    <svg width="80" height="80">
-      <circle class="bg" cx="40" cy="40" r="40" />
-      <circle class="progress" cx="40" cy="40" r="40" />
-    </svg>
-    <div class="progress-text">75%</div>
+  {{#if added}}
+  <div class="alert alert-success">
+    ✅ Course <strong>{{added}}</strong> was successfully added!
   </div>
+  <script>setTimeout(() => document.querySelector('.alert-success').style.display = 'none', 5000);</script>
+  {{/if}}
 
-  <!-- Calendar Button -->
-  <button class="calendar-button" onclick="location.href='/calendar'">
-    📅 Calendar
-  </button>
+  {{#if message}}
+  <div class="alert alert-error">{{message}}</div>
+  <script>setTimeout(() => document.querySelector('.alert-error').style.display = 'none', 5000);</script>
+  {{/if}}
 
-  <!-- Add Class Button -->
-  <button class="add-class-button">
-    ➕ Add Class
-  </button>
+  <button class="calendar-button" onclick="location.href='/calendar'">📅 Calendar</button>
 
+  <div class="dashboard-container">
+    <div class="section">
+      <h2>Your Courses</h2>
+      <form action="/add-class" method="POST" class="add-form">
+        <input type="text" name="course_id" placeholder="Enter Course Code (e.g., ACCT 3220)" required />
+        <button type="submit">➕ Add Class</button>
+      </form>
+
+      {{#if courses}}
+      <div class="card-grid">
+        {{#each courses}}
+        <div class="card">
+          <h3>{{this.course_id}}</h3>
+          <p>{{this.course_name}}</p>
+          <form method="POST" action="/remove-class" class="remove-form">
+            <input type="hidden" name="course_id" value="{{this.course_id}}" />
+            <button type="submit" title="Remove Course">✕</button>
+          </form>
+        </div>
+        {{/each}}
+      </div>
+      {{/if}}
+    </div>
+
+    <div class="section">
+      <h2>Your Hobbies & Interests</h2>
+      <form action="/add-hobby" method="POST" class="add-form">
+        <input type="text" name="hobby" placeholder="Add a hobby or interest..." required />
+        <button type="submit">➕ Add Hobby</button>
+      </form>
+
+      {{#if hobbies}}
+      <div class="card-grid">
+        {{#each hobbies}}
+        <div class="card">
+          <p>{{this.hobby}}</p>
+          <form method="POST" action="/remove-hobby" class="remove-form">
+            <input type="hidden" name="hobby" value="{{this.hobby}}" />
+            <button type="submit" title="Remove Hobby">✕</button>
+          </form>
+        </div>
+        {{/each}}
+      </div>
+      {{/if}}
+    </div>
+  </div>
 </body>
+
 </html>
