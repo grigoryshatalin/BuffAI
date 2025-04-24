@@ -82,8 +82,10 @@ app.get('/home', async (req, res) => {
 
   let courses = [];
   let hobbies = [];
+  let studentYear = '';
 
   try {
+    // Query for courses
     courses = await db.any(`
       SELECT c.course_id, c.course_name, sc.year
       FROM student_courses sc
@@ -91,21 +93,29 @@ app.get('/home', async (req, res) => {
       WHERE sc.student_id = $1
     `, [student.student_id]);
 
+    // Query for hobbies
     hobbies = await db.any(`
       SELECT hobby FROM student_hobbies WHERE student_id = $1
     `, [student.student_id]);
 
+    // Query for students year from the students table
+    const studentResult = await db.one(`
+      SELECT year FROM students WHERE student_id = $1
+    `, [student.student_id]);
+
+    studentYear = studentResult.year;
+
   } catch (err) {
     console.error('Error loading student info:', err);
   }
-  console.log(courses)
 
   res.render('home', {
     title: 'Home',
     added,
     message,
     courses,
-    hobbies, // ✅ now it's passed to the template
+    hobbies,
+    studentYear,
     layout: 'main',
     showNav: true
   });
