@@ -324,8 +324,11 @@ app.get('/calendar', (req, res) => {
       message: 'You are not logged in!'
     });
   }
-  res.render('calendar', { title: 'calendar' });
+  res.render('calendar', { title: 'calendar', layout: 'main', showNav: true });
 });
+
+
+
 
 //testing
 app.get('/welcome', (req, res) => {
