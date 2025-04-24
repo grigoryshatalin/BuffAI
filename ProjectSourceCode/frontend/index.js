@@ -173,6 +173,7 @@ app.get('/home', async (req, res) => {
     showNav: true
   });
 });
+
 app.post('/remove-class', async (req, res) => {
   const student = req.session.user;
   const { course_id } = req.body;

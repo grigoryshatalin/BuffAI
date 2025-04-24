@@ -147,11 +147,11 @@
     </script>
   {{/if}}
 
-  <button class="calendar-button" onclick="location.href='/calendar'">📅 Calendar</button>
+
 
   <div class="dashboard-container">
     <div class="section">
-      <h2>Your Courses, {{studentYear}}</h2>
+      <h2>Your Courses</h2>
 
       {{#each (array "freshman" "sophomore" "junior" "senior") as |yearLabel|}}
         <h2>{{capitalize yearLabel}}</h2>
@@ -178,7 +178,8 @@
         {{/if}}
       {{/each}}
     </div>
-
+  </div>
+  <div>
     <div class="section">
       <h2>Your Hobbies & Interests</h2>
       <form action="/add-hobby" method="POST" class="add-form">
@@ -190,9 +191,9 @@
       <div class="card-grid">
         {{#each hobbies}}
         <div class="card">
-          <p>{{this}}</p>
+          <p>{{this.hobby}}</p>
           <form method="POST" action="/remove-hobby" class="remove-form">
-            <input type="hidden" name="hobby" value="{{this}}" />
+            <input type="hidden" name="hobby" value="{{this.hobby}}" />
             <button type="submit" title="Remove Hobby">✕</button>
           </form>
         </div>

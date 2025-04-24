@@ -35,15 +35,15 @@ services:
     depends_on:
       - db
       - ollama
-      # - python-api
+      - python-api
     command: sh -c "npm install && npm run start"
 
-  # python-api:
-  #   build:
-  #     context: ./python_api
-  #   ports:
-  #     - '5001:5001'
-  #   restart: unless-stopped
+  python-api:
+     build:
+       context: ./python_api
+     ports:
+       - '5001:5001'
+     restart: unless-stopped
 
 volumes:
   db-data:
