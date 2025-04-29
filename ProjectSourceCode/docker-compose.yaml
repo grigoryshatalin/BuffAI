@@ -9,15 +9,13 @@ services:
       - "5432:5432"
 
   ollama:
-    build:
-      context: .
-      dockerfile: ollama.Dockerfile
+    image: ollama/ollama:latest
     volumes:
       - ollama-data:/root/.ollama
-      - ./ollama-entrypoint.sh:/entrypoint.sh  # ✅ mount it
     ports:
       - "11434:11434"
-    entrypoint: /entrypoint.sh  # ✅ correct name and path
+    restart: unless-stopped
+
 
   web:
     image: node:lts

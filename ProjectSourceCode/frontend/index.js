@@ -638,7 +638,7 @@ Respond thoughtfully. Begin below.
       url: 'http://ollama:11434/api/chat',
       responseType: 'stream',
       data: {
-        model: 'gemma3:1b',
+        model: 'gemma:2b',
         messages: chatHistory,
         stream: true
       }
