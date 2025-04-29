@@ -488,63 +488,67 @@ app.get('/advisor', (req, res) => {
 });
 
 // Route to interact with Ollama
-let chatHistory = []; // per session — in-memory (could be user/session based)
-
-app.use(express.json());
-
 app.post('/stream', async (req, res) => {
   const { prompt } = req.body;
   const student = req.session.user;
 
+  if (!student) {
+    return res.status(401).json({ error: 'User not authenticated' });
+  }
+
   let studentInfo = '';
-  let formattedReqs = 'Degree requirements could not be loaded.';
-  let courseListText = 'No courses added.';
-  let hobbyListText = 'No hobbies listed.';
+  let completedCoursesText = 'No courses found.';
+  let degreeRequirementsText = 'Degree requirements could not be loaded.';
+  let hobbiesText = 'No hobbies listed.';
 
   try {
-    const result = await db.one(`
-    SELECT 
-      s.fullName, s.email, s.year, s.major, s.degree, s.minor,
-      d.reqs, d.totalCreditHours, d.electives, d.UpperDivisonCreds, d.hasMinor
-    FROM students s
-    JOIN degrees d ON s.major = d.major AND s.degree = d.degreeName
-    WHERE s.student_id = $1
-  `, [student.student_id]);
+    // Fetch student basic info and degree requirements
+    const studentResult = await db.one(`
+      SELECT 
+        s.fullName, s.email, s.year, s.major, s.degree, s.minor,
+        d.reqs, d.totalCreditHours, d.electives, d.UpperDivisonCreds, d.hasMinor
+      FROM students s
+      JOIN degrees d ON s.major = d.major AND s.degree = d.degreeName
+      WHERE s.student_id = $1
+    `, [student.student_id]);
 
-    const requirements = Array.isArray(result.reqs) ? result.reqs : JSON.parse(result.reqs);
+    // Fetch all courses mapping
     const allCourses = await db.any('SELECT course_id, course_name FROM courses');
     const courseMap = Object.fromEntries(allCourses.map(c => [c.course_id, c.course_name]));
 
-    // Get courses
+    // Fetch student's completed courses
     const takenCourses = await db.any(`
-    SELECT c.course_id, c.course_name
-    FROM student_courses sc
-    JOIN courses c ON sc.course_id = c.course_id
-    WHERE sc.student_id = $1
-  `, [student.student_id]);
+      SELECT c.course_id, c.course_name
+      FROM student_courses sc
+      JOIN courses c ON sc.course_id = c.course_id
+      WHERE sc.student_id = $1
+    `, [student.student_id]);
 
     if (takenCourses.length > 0) {
-      courseListText = takenCourses.map(c => `- ${c.course_id}: ${c.course_name}`).join('\n');
+      completedCoursesText = takenCourses.map(c => `${c.course_id} - ${c.course_name}`).join('\n');
     }
 
-    // Get hobbies
+    // Fetch student's hobbies
     const hobbies = await db.any(`
-    SELECT hobby FROM student_hobbies WHERE student_id = $1
-  `, [student.student_id]);
+      SELECT hobby FROM student_hobbies WHERE student_id = $1
+    `, [student.student_id]);
 
     if (hobbies.length > 0) {
-      hobbyListText = hobbies.map(h => `- ${h.hobby}`).join('\n');
+      hobbiesText = hobbies.map(h => `- ${h.hobby}`).join('\n');
     }
 
-    formattedReqs = requirements.map((req, i) => {
+    // Format degree requirements
+    const requirements = Array.isArray(studentResult.reqs) ? studentResult.reqs : JSON.parse(studentResult.reqs);
+
+    degreeRequirementsText = requirements.map((req, i) => {
       if (Array.isArray(req)) {
         const options = req.map(code => {
-          const title = courseMap[code] || 'UNKNOWN';
+          const title = courseMap[code] || 'UNKNOWN COURSE';
           return `${code}: ${title}`;
         });
         return `Requirement ${i + 1}: ONE OF → ${options.join(', ')}`;
       } else {
-        const title = courseMap[req] || 'UNKNOWN';
+        const title = courseMap[req] || 'UNKNOWN COURSE';
         return `Requirement ${i + 1}: ${req}: ${title}`;
       }
     }).join('\n');
@@ -552,33 +556,23 @@ app.post('/stream', async (req, res) => {
     studentInfo = `
 STUDENT PROFILE
 ---------------
-Name: ${result.fullName}
-Email: ${result.email}
-Year: ${result.year}
-Major: ${result.major}
-Degree: ${result.degree}
-Minor: ${result.minor || 'None'}
+Name: ${studentResult.fullName}
+Email: ${studentResult.email}
+Year: ${studentResult.year}
+Major: ${studentResult.major}
+Degree: ${studentResult.degree}
+Minor: ${studentResult.minor || 'None'}
 
-DEGREE REQUIREMENTS
--------------------
-Total Credit Hours: ${result.totalcredithours}
-Electives: ${result.electives}
-Upper Division Credits Required: ${result.upperdivisoncreds}
-Minor Required: ${result.hasminor ? 'Yes' : 'No'}
+OTHER DETAILS
+-------------
+Total Credit Hours Needed: ${studentResult.totalcredithours}
+Electives Needed: ${studentResult.electives}
+Upper Division Credits Needed: ${studentResult.upperdivisoncreds}
+Minor Required: ${studentResult.hasminor ? 'Yes' : 'No'}
 
-COURSE REQUIREMENTS
--------------------
-(All required unless marked as "one of")
-
-${formattedReqs}
-
-CURRENTLY ADDED COURSES
------------------------
-${courseListText}
-
-HOBBIES & INTERESTS
--------------------
-${hobbyListText}
+HOBBIES
+-------
+${hobbiesText}
 `;
 
   } catch (err) {
@@ -586,33 +580,42 @@ ${hobbyListText}
     studentInfo = "The student's data could not be retrieved.";
   }
 
+  // 🎯 CLEAN SYSTEM PROMPT
   const chatHistory = [
     {
       role: 'system',
       content: `
-You are a helpful college advisor AI assistant.
+You are a helpful academic advisor AI.
 
-The student is already authenticated. You are allowed to reference their profile.
+You have access to the student's official profile.
 
-Here is their profile:
-
+Student Information:
 ${studentInfo}
 
-You may directly answer questions like "what is my major", "what classes have I taken", or "what are my hobbies?".
-Do not say you cannot access their data.
+Completed Courses:
+------------------
+${completedCoursesText}
 
-⚠️ Important Instructions:
-- You are explicitly allowed to refer to the student's name, email, major, year, degree, minor, courses, hobbies, and requirements.
-- If the user asks questions like "what are my interests?" or "what are my current classes?", respond from the provided data.
-- Do NOT say \"I don’t know your profile\" — you already have it.
-- If a field is missing or null (e.g., no minor), respond accordingly.
+Degree Requirements:
+---------------------
+${degreeRequirementsText}
 
-Degree requirements format:
-- Outer list = **AND** conditions
-- Inner list = **OR** options
+⚠️ You MUST ONLY use the "Completed Courses" list above to determine what the student has completed.
+Do not guess based on degree requirements alone.
 
-Respond thoughtfully. Begin below.
-    `
+If a required course is missing from Completed Courses, assume the student still needs to complete it.
+
+✅ Answer in clear sections:
+- Completed Courses
+- Remaining Core Courses
+- Remaining Electives
+- Other Graduation Requirements
+
+✅ If major is Computer Science, explain clearly.
+✅ If data is missing, kindly mention it and recommend checking their Degree Audit Report.
+
+Stay professional, helpful, and accurate.
+      `.trim()
     },
     {
       role: 'user',
@@ -620,25 +623,21 @@ Respond thoughtfully. Begin below.
     }
   ];
 
-
   const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-  const filePath = path.join(__dirname, `chat-${timestamp}.txt`);
-  const writeStream = fs.createWriteStream(filePath);
-  writeStream.write(`User: ${prompt}\nAssistant: `);
+  const logPath = path.join(__dirname, `chat-${timestamp}.txt`);
+  const writeStream = fs.createWriteStream(logPath);
 
   res.setHeader('Content-Type', 'text/event-stream');
   res.setHeader('Cache-Control', 'no-cache');
   res.setHeader('Connection', 'keep-alive');
 
   try {
-    const fullPromptLog = chatHistory.map(msg => `${msg.role.toUpperCase()}: ${msg.content}`).join('\n\n');
-    fs.writeFileSync(`full-prompt-${timestamp}.txt`, fullPromptLog);
     const ollamaRes = await axios({
       method: 'post',
       url: 'http://ollama:11434/api/chat',
       responseType: 'stream',
       data: {
-        model: 'gemma3:1b',
+        model: 'gemma:2b', // or gemma3:1b if you're using that consistently
         messages: chatHistory,
         stream: true
       }
@@ -669,6 +668,7 @@ Respond thoughtfully. Begin below.
     res.end();
   }
 });
+
 
 
 //Route to interact with Rate My Professor
