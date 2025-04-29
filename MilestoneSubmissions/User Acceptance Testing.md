@@ -25,10 +25,11 @@ This feature enables users to send messages to the Ollama LLM-based API and rece
 - User input data about their year, major, and minor from a dropdown list in the registration page
 
 ### Test Cases
-| Test ID | Test Description                            | Input                                | Expected Result        |
-|---------|---------------------------------------------|-------------------------------      -|------------------------|
-| TC001   | Verify Ollama sends any response            | "Hello"                              | Non-empty response from the API|
-| TC002   | Verify Ollama's degree planning ability     | Information from registration fields | A CSV file of of classes organized b                                                         of Year, Major, and Minor               by year you must take them to complete your degreee
+| Test ID | Test Description                            | Input                                | Expected Result                            |
+|---------|---------------------------------------------|--------------------------------------|--------------------------------------------|
+| TC001   | Verify Ollama sends any response            | "Hello"                              | Non-empty response from the API            | 
+| TC002   | Verify Ollama's degree planning ability     | Information from registration field  | A CSV file of of classes organized         |     |         |       of Year, Major, and Minor             |                                      | by year you must                           |
+|         |                                             |                                      | take them to complete your degreee         |
                                                           
 ### Test Results
 
@@ -59,12 +60,12 @@ This feature shows a route between two user-inputted locations using the Google 
 - Destination of CU's Campus
 
 ### Test Cases
-| Test ID | Test Description                        | Input                                 | Expected Result                                        |
+| Test ID | Test Description                        | Input                                 | Expected Result                                    |
 |---------|-----------------------------------------|---------------------------------------|----------------------------------------------------|
 | TC003   | Show route on map between two locations |User input valid origin and destination| Route drawn on map with time & distance info shown |
 | TC004   | Handle invalid location input           | "Xyzabc123" to "Seattle"              | Show "invalid input" message                       |
 | TC005   | Take in user input fields               | Same as TC00p3                        | "Search" button changes color and allows you to    |
-            of origin and desination                                                           inquire the google maps API
+|         | of origin and desination                |                                       |    inquire the google maps API                     |
 
 ### Test Results
 
