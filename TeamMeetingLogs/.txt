@@ -11,3 +11,14 @@ Week #3 Meeting notes
  - Ari and Spencer split the remaining front end pages to work on 
  - Marcus needs to finish majors and minors sql tables for front end development by next meeting 
  - Grig, Marcus, and James to continue progressing with individual tasks  
+
+week #4
+We talked about everything else to get done before the deadline
+We discussed some questions about new code and ollama functioning
+Figured out more about the rate my professor and map implementations 
+Made a list of what else has to be accomplished
+Tweaked out idea of a home page to better fit the deadline
+Discussed finalized queries 
+Reviewed and submitted some pr requests 
+Made sure to discuss how the database is going to be linked to the AI
+Lastly planned another meeting before the deadline on sunday
