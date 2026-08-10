@@ -496,6 +496,11 @@ app.post('/stream', async (req, res) => {
     return res.status(401).json({ error: 'User not authenticated' });
   }
 
+  // Server-side input validation for the chat prompt
+  if (!prompt || typeof prompt !== 'string' || !prompt.trim()) {
+    return res.status(400).json({ error: 'A non-empty prompt is required' });
+  }
+
   let studentInfo = '';
   let completedCoursesText = 'No courses found.';
   let degreeRequirementsText = 'Degree requirements could not be loaded.';
@@ -688,6 +693,14 @@ app.get('/map', (req, res) => {
 
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-});
+
+// Only bind the port when run directly (`node index.js`). When the module is
+// required by the Mocha/Chai-HTTP integration tests, chai-http spins up its
+// own ephemeral server against the exported app instead.
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
+  });
+}
+
+module.exports = app;

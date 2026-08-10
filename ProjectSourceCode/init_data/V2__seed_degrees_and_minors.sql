@@ -1,3 +1,4 @@
+-- V2: Seed degrees and minors (degree requirements stored as JSONB).
 INSERT INTO degrees (major, degreeName, classCode, reqs, UpperDivisonCreds, electives, totalCreditHours, hasMinor)
 VALUES 
     (

@@ -1,3 +1,4 @@
+-- V3: Seed the course catalog (referenced by V4 prerequisites via FK).
 INSERT INTO courses
   (course_id, course_name, credit_hours, specific_major)
 VALUES

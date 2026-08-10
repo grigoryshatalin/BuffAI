@@ -1,3 +1,4 @@
+-- V4: Seed prerequisite slots per course (course_id -> courses FK).
 INSERT INTO prerequisites (course_id, slot1, slot2, slot3, slot4, slot5)
 VALUES 
 ('ACCT 3220', ARRAY['BASE 2104'], NULL, NULL, NULL, NULL),

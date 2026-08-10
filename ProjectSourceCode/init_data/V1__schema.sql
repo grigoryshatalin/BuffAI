@@ -1,3 +1,8 @@
+-- V1: Relational schema.
+-- Files in this directory are versioned (V1..V4) so PostgreSQL's
+-- docker-entrypoint-initdb.d runs them in a deterministic order:
+--   V1 schema -> V2 degrees/minors -> V3 courses -> V4 prerequisites
+-- (V4 references courses via FK, so it must run after V3.)
 DROP TABLE IF EXISTS student_courses;
 DROP TABLE IF EXISTS prerequisites;
 DROP TABLE IF EXISTS students;
